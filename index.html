@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Election Jeopardy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&family=Dancing+Script&family=Great+Vibes&family=Satisfy&family=Caveat&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Roboto', sans-serif; background-color: #000000; color: #FFFFFF; padding: 30px; }
+.container { max-width: 1200px; margin: 0 auto; }
+.screen { display: none; }
+.screen.active { display: block; }
+.board-screen { flex-direction: column; gap: 2rem; }
+.board-screen.active { display: flex; }
+h1 { font-family: 'Bebas Neue', sans-serif; font-size: 60px; text-align: center; margin-bottom: 1.5rem; color: #FFFFFF; letter-spacing: 4px; }
+.round-label { font-family: 'Bebas Neue', sans-serif; font-size: 28px; text-align: center; margin-bottom: 1rem; color: #FFEE00; letter-spacing: 2px; }
+.setup-screen { text-align: center; }
+.team-nametags { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+.nametag { border: 4px solid #FFFFFF; border-radius: 14px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,0.6); transition: transform 0.2s; }
+.nametag:hover { transform: scale(1.03); }
+.nametag.red .nametag-header { background: #E8443B; }
+.nametag.blue .nametag-header { background: #4A90D9; }
+.nametag.green .nametag-header { background: #8BAA5A; }
+.nametag.gold .nametag-header { background: #D9B400; }
+.nametag-header { padding: 1.25rem 1rem 1rem; color: #FFFFFF; text-align: center; }
+.nametag-hello { font-family: 'Bebas Neue', sans-serif; font-size: 52px; letter-spacing: 4px; line-height: 0.95; margin-bottom: 2px; }
+.nametag-subtext { font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0.5px; }
+.nametag-input-area { background: #FFFFFF; padding: 1.75rem 1rem; min-height: 130px; display: flex; align-items: center; justify-content: center; }
+.nametag-input { font-size: 30px; border: none; background: transparent; color: #111111; text-align: center; width: 100%; outline: none; letter-spacing: 1px; }
+.nametag-input::placeholder { color: #BBBBBB; }
+.start-button { font-family: 'Bebas Neue', sans-serif; font-size: 38px; padding: 22px 64px; background: #FFEE00; color: #111111; border: 5px solid #FFFFFF; border-radius: 14px; cursor: pointer; letter-spacing: 3px; }
+.start-button:hover { transform: scale(1.06); background: #FFF54D; }
+.scoreboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.score-nametag { border: 4px solid #FFFFFF; border-radius: 12px; overflow: hidden; }
+.score-nametag.red .score-header { background: #E8443B; }
+.score-nametag.blue .score-header { background: #4A90D9; }
+.score-nametag.green .score-header { background: #8BAA5A; }
+.score-nametag.gold .score-header { background: #D9B400; }
+.score-header { padding: 0.6rem; color: #FFFFFF; text-align: center; }
+.score-hello { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 3px; line-height: 0.95; }
+.score-subtext { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; }
+.score-area { background: #FFFFFF; padding: 0.85rem; text-align: center; }
+.score-name { font-size: 22px; color: #111111; margin-bottom: 2px; }
+.score-name.team1 { font-family: 'Dancing Script', cursive; }
+.score-name.team2 { font-family: 'Great Vibes', cursive; }
+.score-name.team3 { font-family: 'Satisfy', cursive; }
+.score-name.team4 { font-family: 'Caveat', cursive; font-size: 26px; }
+.score-value { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #111111; }
+.board { background: rgba(255,255,255,0.05); border: 3px solid #FFFFFF; border-radius: 16px; padding: 2rem; flex: 1; }
+.categories { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+.category-tag { background: #FFFFFF; color: #111111; border-radius: 10px; padding: 1rem 0.5rem; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; min-height: 80px; display: flex; align-items: center; justify-content: center; line-height: 1.1; border: 3px solid; }
+.category-tag.cat1 { border-color: #E8443B; box-shadow: 0 0 15px rgba(232,68,59,0.6); }
+.category-tag.cat2 { border-color: #4A90D9; box-shadow: 0 0 15px rgba(74,144,217,0.6); }
+.category-tag.cat3 { border-color: #8BAA5A; box-shadow: 0 0 15px rgba(139,170,90,0.6); }
+.category-tag.cat4 { border-color: #D9B400; box-shadow: 0 0 15px rgba(217,180,0,0.6); }
+.questions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+.q-nametag { border: 3px solid #FFFFFF; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-height: 110px; display: flex; flex-direction: column; }
+.q-nametag:nth-child(4n+1) .q-header { background: #E8443B; }
+.q-nametag:nth-child(4n+2) .q-header { background: #4A90D9; }
+.q-nametag:nth-child(4n+3) .q-header { background: #8BAA5A; }
+.q-nametag:nth-child(4n+4) .q-header { background: #D9B400; }
+.q-nametag:hover:not(.answered) { transform: scale(1.08); }
+.q-nametag.answered { opacity: 0.3; cursor: not-allowed; }
+.q-header { padding: 0.5rem; color: #FFFFFF; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; }
+.q-area { background: #FFFFFF; flex: 1; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: #111111; }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+.modal-overlay.active { display: flex; }
+.modal-overlay.timeout { animation: flashred 0.5s infinite; }
+@keyframes flashred { 0%, 100% { background: rgba(0,0,0,0.95); } 50% { background: rgba(232,68,59,0.5); } }
+.timer-display { position: fixed; top: 30px; right: 30px; background: rgba(0,0,0,0.9); border: 3px solid #FFEE00; border-radius: 12px; padding: 15px 25px; text-align: center; z-index: 999; }
+.timer-number { font-family: 'Bebas Neue', sans-serif; font-size: 64px; color: #FFEE00; line-height: 1; font-weight: bold; }
+.timer-label { font-family: 'Roboto', sans-serif; font-size: 16px; color: #FFFFFF; letter-spacing: 2px; margin-top: 5px; }
+.timer-display.timeout .timer-number { color: #E8443B; animation: pulse 0.3s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.question-modal { border: 4px solid #FFFFFF; border-radius: 16px; background: #FFFFFF; max-width: 900px; width: 100%; padding: 2.5rem; color: #111111; }
+.category-label { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: #E8443B; letter-spacing: 2px; margin-bottom: 1rem; }
+.question-display { margin: 1rem 0 2rem; text-align: center; }
+.question-text { font-family: 'Roboto', sans-serif; font-size: 22px; line-height: 1.6; margin: 1rem 0; }
+.choice-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
+.choice-btn { padding: 16px; font-family: 'Bebas Neue', sans-serif; font-size: 18px; border: 3px solid #111111; background: #F5F5F5; color: #111111; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
+.choice-btn:hover { background: #111111; color: #FFFFFF; }
+.choice-btn.correct { background: #8BAA5A; color: #FFFFFF; border-color: #8BAA5A; }
+.choice-btn.incorrect { background: #E8443B; color: #FFFFFF; border-color: #E8443B; }
+.buzzers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 2rem 0; }
+.buzz-btn { padding: 20px; font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; border: 3px solid #111111; border-radius: 12px; cursor: pointer; }
+.buzz-btn.red { background: #E8443B; color: #FFFFFF; }
+.buzz-btn.blue { background: #4A90D9; color: #FFFFFF; }
+.buzz-btn.green { background: #8BAA5A; color: #FFFFFF; }
+.buzz-btn.gold { background: #D9B400; color: #000000; }
+.buzz-btn:hover:not(:disabled) { transform: scale(1.05); }
+.buzz-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.buzz-btn.active { border: 4px solid #FFFF00; box-shadow: 0 0 20px rgba(255,255,0,0.5); }
+.transition-screen { text-align: center; padding: 3rem 0; }
+.transition-title { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: #FFEE00; margin-bottom: 2rem; letter-spacing: 3px; }
+.transition-btn { font-family: 'Bebas Neue', sans-serif; font-size: 32px; padding: 20px 50px; background: #FFEE00; color: #111111; border: 4px solid #FFFFFF; border-radius: 12px; cursor: pointer; letter-spacing: 2px; }
+.final-jeopardy-screen { text-align: center; padding: 2rem 0; }
+.fj-title { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: #FFEE00; margin: 2rem 0; letter-spacing: 3px; }
+.fj-wagers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin: 2rem 0; }
+.team-wager { padding: 1.5rem; background: rgba(255,255,255,0.1); border: 2px solid #FFFFFF; border-radius: 12px; color: #FFFFFF; }
+.team-wager h3 { font-size: 28px; margin-bottom: 1rem; color: #FFFFFF; }
+.team-wager h3.team1 { font-family: 'Dancing Script', cursive; }
+.team-wager h3.team2 { font-family: 'Great Vibes', cursive; }
+.team-wager h3.team3 { font-family: 'Satisfy', cursive; }
+.team-wager h3.team4 { font-family: 'Caveat', cursive; font-size: 32px; }
+.wager-input { width: 100%; padding: 12px; font-size: 18px; font-family: 'Bebas Neue', sans-serif; border: 2px solid #FFEE00; background: #111111; color: #FFEE00; text-align: center; border-radius: 8px; }
+.fj-btn { font-family: 'Bebas Neue', sans-serif; font-size: 28px; padding: 16px 40px; background: #FFEE00; color: #111111; border: 3px solid #FFFFFF; border-radius: 10px; cursor: pointer; letter-spacing: 2px; margin: 1rem; }
+.end-button { width: 100%; padding: 20px; font-family: 'Bebas Neue', sans-serif; font-size: 30px; background: #E8443B; color: #FFFFFF; border: 4px solid #FFFFFF; border-radius: 14px; cursor: pointer; letter-spacing: 3px; }
+.end-button:hover { background: #C9332B; }
+</style>
+</head>
+<body>
+<div class="container">
+  
+  <div class="setup-screen screen active">
+    <h1>ELECTION JEOPARDY</h1>
+    <div class="team-nametags">
+      <div class="nametag red"><div class="nametag-header"><div class="nametag-hello">HELLO</div><div class="nametag-subtext">my name is</div></div><div class="nametag-input-area"><input type="text" class="nametag-input" id="team1" placeholder="Team 1"></div></div>
+      <div class="nametag blue"><div class="nametag-header"><div class="nametag-hello">HELLO</div><div class="nametag-subtext">my name is</div></div><div class="nametag-input-area"><input type="text" class="nametag-input" id="team2" placeholder="Team 2"></div></div>
+      <div class="nametag green"><div class="nametag-header"><div class="nametag-hello">HELLO</div><div class="nametag-subtext">my name is</div></div><div class="nametag-input-area"><input type="text" class="nametag-input" id="team3" placeholder="Team 3"></div></div>
+      <div class="nametag gold"><div class="nametag-header"><div class="nametag-hello">HELLO</div><div class="nametag-subtext">my name is</div></div><div class="nametag-input-area"><input type="text" class="nametag-input" id="team4" placeholder="Team 4"></div></div>
+    </div>
+    <button class="start-button" onclick="startGame()">START GAME</button>
+  </div>
+
+  <div class="board-screen screen">
+    <div class="round-label">ROUND 1</div>
+    <div class="scoreboard" id="scoreboard"></div>
+    <div class="board"><div class="categories" id="categories"></div><div class="questions" id="questions"></div></div>
+    <button class="end-button" onclick="nextRound()">NEXT ROUND</button>
+  </div>
+
+  <div class="transition-screen screen" id="transition">
+    <div class="transition-title" id="transition-title">END OF ROUND 1</div>
+    <div class="scoreboard" id="transition-scores"></div>
+    <button class="transition-btn" onclick="advanceGame()">CONTINUE</button>
+  </div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="timer-display" id="timer-display">
+      <div class="timer-number"><span id="timer">30</span></div>
+      <div class="timer-label">SECONDS</div>
+    </div>
+    <div class="question-modal">
+      <div class="category-label" id="q-category">Category</div>
+      <div class="question-display">
+        <div class="question-text" id="question-text">Question</div>
+      </div>
+      <div class="buzzers" id="buzzers"></div>
+      <div class="choice-buttons" id="choices" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div class="final-jeopardy-screen screen" id="fj-screen">
+    <div class="fj-title">FINAL JEOPARDY</div>
+    <div class="fj-wagers" id="fj-wagers"></div>
+    <button class="fj-btn" onclick="revealFJClue()">REVEAL CLUE</button>
+  </div>
+
+  <div class="screen" id="fj-clue-screen">
+    <div style="text-align: center; padding: 2rem;">
+      <div class="fj-title" id="fj-clue-text">Clue</div>
+      <div class="fj-wagers" id="fj-answers"></div>
+      <button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;">CALCULATE FINAL SCORES</button>
+    </div>
+  </div>
+
+  <div class="screen" id="game-over">
+    <div style="text-align: center; padding: 3rem 0;">
+      <h1 style="color: #FFEE00; font-size: 56px; margin-bottom: 2rem;">GAME OVER</h1>
+      <div class="scoreboard" id="final-scores"></div>
+      <h1 id="winner-text" style="font-size: 48px; color: #FFEE00; margin-top: 3rem;"></h1>
+      <button class="transition-btn" onclick="location.reload()" style="margin-top: 2rem;">PLAY AGAIN</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const pointValues = [200, 400, 600, 800, 1000];
+const categoryNames1 = ['The Central Valley Reckoning', 'Democratic Dream Team', 'Flip the Script', 'The Progressive Playbook'];
+const categoryNames2 = ['Valley of Secrets', "Yesterday's News", 'Follow the Gold', 'The Numbers Game'];
+const teamColors = ['red', 'blue', 'green', 'gold'];
+const teamFonts = ['team1', 'team2', 'team3', 'team4'];
+
+const questionsRound1 = {
+  'The Central Valley Reckoning': [
+    { text: "Which three counties does CA-22 span?", choices: ['Kern, Kings, Tulare', 'Fresno, Kings, Kern', 'Tulare, Inyo, Kern', 'Kings, Mono, Fresno'], correct: 0 },
+    { text: "What percentage of CA-22 is Latino?", choices: ['Approximately 50%', 'Approximately 75%', 'Approximately 90%', 'Approximately 65%'], correct: 1 },
+    { text: "Which CA-22 candidate is a political science professor?", choices: ['David Valadao', 'Jasmeet Bains', 'Randy Villegas', 'Eric Garcia'], correct: 2 },
+    { text: "What major issue affects Central Valley farm workers?", choices: ['Tech regulation', 'Water rights & labor issues', 'Immigration reform only', 'Healthcare costs'], correct: 1 },
+    { text: "CA-22 has the highest rate of enrollment in which program?", choices: ['Medicare', 'Medicaid', 'ACA', 'Social Security'], correct: 1 }
+  ],
+  'Democratic Dream Team': [
+    { text: "Who is the current Vice President?", choices: ['Nancy Pelosi', 'Kamala Harris', 'Gretchen Whitmer', 'Josh Shapiro'], correct: 1 },
+    { text: "What is Chuck Schumer's position?", choices: ['Speaker of House', 'Senate Majority Leader', 'DNC Chair', 'Minority Whip'], correct: 1 },
+    { text: "Who was the first African American House Democratic leader?", choices: ['Al Green', 'Hakeem Jeffries', 'James Clyburn', 'Gregory Meeks'], correct: 1 },
+    { text: "Until what year was Nancy Pelosi Speaker?", choices: ['2021', '2022', '2023', '2024'], correct: 2 },
+    { text: "Who served as Democratic whip before becoming party leader?", choices: ['Jim Clyburn', 'Hakeem Jeffries', 'Steny Hoyer', 'David Cicilline'], correct: 1 }
+  ],
+  'Flip the Script': [
+    { text: "Gabe Vasquez defends a seat in which state?", choices: ['Arizona', 'Nevada', 'New Mexico', 'Colorado'], correct: 2 },
+    { text: "Adam Gray's CA-13 is considered a flip from which party?", choices: ['Republican', 'Democratic', 'Independent', 'Green'], correct: 0 },
+    { text: "What does the DCCC's Frontline program protect?", choices: ['New Democratic seats', 'Safe Democratic seats', 'Vulnerable Democratic seats', 'Swing state races'], correct: 2 },
+    { text: "Which state does Susie Lee represent?", choices: ['Arizona', 'Nevada', 'New Mexico', 'California'], correct: 1 },
+    { text: "Name a state with competitive House races in 2026:", choices: ['Texas', 'New York', 'Michigan', 'Alabama'], correct: 2 }
+  ],
+  'The Progressive Playbook': [
+    { text: "What state does Bernie Sanders represent?", choices: ['Massachusetts', 'New Hampshire', 'Vermont', 'Maine'], correct: 2 },
+    { text: "AOC represents which state?", choices: ['Massachusetts', 'New York', 'Connecticut', 'New Jersey'], correct: 1 },
+    { text: "Who endorsed Randy Villegas in CA-22?", choices: ['Elizabeth Warren', 'Bernie Sanders', 'AOC', 'All of above'], correct: 1 },
+    { text: "Rashida Tlaib advocates primarily for what issues?", choices: ['Tech regulation', 'Palestinian rights & healthcare', 'Education only', 'Environment only'], correct: 1 },
+    { text: "Which is Ro Khanna known for championing?", choices: ['Military spending', 'Tech regulation & climate', 'Tax cuts', 'Deregulation'], correct: 1 }
+  ]
+};
+
+const questionsRound2 = {
+  'Valley of Secrets': [
+    { text: "What is the largest city in CA-22?", choices: ['Visalia', 'Hanford', 'Bakersfield', 'Delano'], correct: 2 },
+    { text: "The Central Valley is known for what?", choices: ["Hollywood production", "America's breadbasket", 'Gold mining', 'Tech innovation'], correct: 1 },
+    { text: "What major environmental issue affects the Valley?", choices: ['Water scarcity', 'Agricultural pollution & asthma', 'Wildfires only', 'Earthquakes'], correct: 1 },
+    { text: "A key conflict in water rights is between:", choices: ['Farmers & fishermen', 'Cities & farms', 'Environmental protection & agriculture', 'All of above'], correct: 3 },
+    { text: "Agricultural consolidation impacts farm workers how?", choices: ['Higher wages', 'Better conditions', 'Reduced bargaining power', 'More job options'], correct: 2 }
+  ],
+  "Yesterday's News": [
+    { text: "Who signed the Voting Rights Act of 1965?", choices: ['JFK', 'LBJ', 'Truman', 'Eisenhower'], correct: 1 },
+    { text: "In what year did women gain voting rights?", choices: ['1890', '1900', '1920', '1945'], correct: 2 },
+    { text: "The Southern Strategy shift aligned South with which party?", choices: ['Democrats', 'Republicans', 'Independents', 'Populists'], correct: 1 },
+    { text: "The Tea Party emerged in what year?", choices: ['2007', '2008', '2009', '2010'], correct: 2 },
+    { text: "The Contract with America was associated with whom?", choices: ['Bob Dole', 'Newt Gingrich', 'Trent Lott', 'Dick Armey'], correct: 1 }
+  ],
+  'Follow the Gold': [
+    { text: "What does PAC stand for?", choices: ['Political Action Council', 'Political Action Committee', 'Public Affairs Campaign', 'Policy Action Committee'], correct: 1 },
+    { text: "Citizens United v. FEC allowed what?", choices: ['Unlimited individual donations', 'Unlimited corporate spending', 'Unlimited union donations', 'Foreign donations'], correct: 1 },
+    { text: "Dark money comes from where?", choices: ['Russia', '501(c)(4) nonprofits', 'Super PACs directly', 'Foreign governments'], correct: 1 },
+    { text: "Which billionaire spent $100M+ on 2024 politics?", choices: ['Bill Gates', 'Elon Musk', 'Mark Zuckerberg', 'Warren Buffett'], correct: 1 },
+    { text: "Campaign finance limits are set by:", choices: ['Congress', 'FEC', 'Supreme Court', 'Senate'], correct: 1 }
+  ],
+  'The Numbers Game': [
+    { text: "Millennials were born approximately when?", choices: ['1970s-80s', '1980s-90s', '1990s-2000s', '2000s-2010s'], correct: 1 },
+    { text: "Gen Z favors which political issues?", choices: ['Military spending', 'Climate & healthcare', 'Tax cuts', 'Deregulation'], correct: 1 },
+    { text: "Hispanic/Latino population is approximately what %?", choices: ['10%', '15%', '19-20%', '25%'], correct: 2 },
+    { text: "Purple states are those that are:", choices: ['Safe Democratic', 'Safe Republican', 'Competitive between parties', 'Independent only'], correct: 2 },
+    { text: "Working-class voters without college degrees lean toward:", choices: ['Democrats', 'Republicans', 'Independents', 'No party'], correct: 1 }
+  ]
+};
+
+const finalJeopardy = {
+  clue: "After November 2026 midterms, which party is projected to control the House?",
+  choices: ['Democratic Party', 'Republican Party', 'Independent majority', 'Third party coalition'],
+  correct: 1
+};
+
+let teams = [], scores = [], board1 = {}, board2 = {}, currentRound = 1, currentQ = null, timerInterval = null, currentBuzzer = -1, timeoutHappened = false;
+
+function playBuzzer() { const audioContext = new (window.AudioContext || window.webkitAudioContext)(); const osc = audioContext.createOscillator(); const gain = audioContext.createGain(); osc.connect(gain); gain.connect(audioContext.destination); osc.frequency.value = 800; gain.gain.setValueAtTime(0.3, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3); osc.start(audioContext.currentTime); osc.stop(audioContext.currentTime + 0.3); }
+
+function playWrongBuzzer() { const audioContext = new (window.AudioContext || window.webkitAudioContext)(); const osc = audioContext.createOscillator(); const gain = audioContext.createGain(); osc.connect(gain); gain.connect(audioContext.destination); osc.frequency.setValueAtTime(400, audioContext.currentTime); osc.frequency.linearRampToValueAtTime(200, audioContext.currentTime + 0.5); gain.gain.setValueAtTime(0.3, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5); osc.start(audioContext.currentTime); osc.stop(audioContext.currentTime + 0.5); }
+
+function startGame() {
+  teams = [
+    document.getElementById('team1').value || 'Team 1',
+    document.getElementById('team2').value || 'Team 2',
+    document.getElementById('team3').value || 'Team 3',
+    document.getElementById('team4').value || 'Team 4'
+  ];
+  scores = [0, 0, 0, 0];
+  categoryNames1.forEach(cat => { board1[cat] = pointValues.map(v => ({ answered: false })); });
+  categoryNames2.forEach(cat => { board2[cat] = pointValues.map(v => ({ answered: false })); });
+  
+  document.querySelector('.setup-screen').classList.remove('active');
+  document.querySelector('.board-screen').classList.add('active');
+  currentRound = 1;
+  renderBoard(1);
+}
+
+function renderBoard(round) {
+  const cats = round === 1 ? categoryNames1 : categoryNames2;
+  let catHTML = '';
+  cats.forEach((c, idx) => {
+    const catClass = 'cat' + ((idx % 4) + 1);
+    catHTML += '<div class="category-tag ' + catClass + '">' + c + '</div>';
+  });
+  document.getElementById('categories').innerHTML = catHTML;
+  
+  let qHTML = '';
+  pointValues.forEach((v, idx) => {
+    cats.forEach((cat, catIdx) => {
+      const board = round === 1 ? board1 : board2;
+      const answered = board[cat][idx].answered;
+      qHTML += '<div class="q-nametag ' + (answered ? 'answered' : '') + '" onclick="openQuestion(' + round + ', \'' + cat.replace(/'/g, "\\'") + '\', ' + idx + ')"><div class="q-header">HELLO</div><div class="q-area">' + (answered ? '✓' : '$' + v) + '</div></div>';
+    });
+  });
+  document.getElementById('questions').innerHTML = qHTML;
+  updateScoreboard();
+}
+
+function updateScoreboard() {
+  const sb = document.getElementById('scoreboard');
+  sb.innerHTML = teams.map((t, i) => '<div class="score-nametag ' + teamColors[i] + '"><div class="score-header"><div class="score-hello">HELLO</div><div class="score-subtext">my name is</div></div><div class="score-area"><div class="score-name ' + teamFonts[i] + '">' + t + '</div><div class="score-value">$' + scores[i] + '</div></div></div>').join('');
+}
+
+function openQuestion(round, cat, idx) {
+  const board = round === 1 ? board1 : board2;
+  if (board[cat][idx].answered) return;
+  
+  const qs = round === 1 ? questionsRound1 : questionsRound2;
+  const q = qs[cat][idx];
+  const val = pointValues[idx];
+  
+  currentQ = { round, cat, idx, val };
+  currentBuzzer = -1;
+  timeoutHappened = false;
+  
+  document.getElementById('q-category').textContent = cat + ' for $' + val;
+  document.getElementById('question-text').textContent = q.text;
+  
+  const buzzers = teams.map((t, i) => '<button class="buzz-btn ' + teamColors[i] + '" onclick="buzz(' + i + ')">' + t + '</button>').join('');
+  document.getElementById('buzzers').innerHTML = buzzers;
+  document.getElementById('choices').style.display = 'none';
+  
+  startTimer();
+  document.getElementById('modal').classList.add('active');
+}
+
+function buzz(idx) {
+  if (currentBuzzer >= 0) return;
+  playBuzzer();
+  clearInterval(timerInterval);
+  currentBuzzer = idx;
+  
+  document.querySelectorAll('.buzz-btn').forEach(b => b.disabled = true);
+  document.querySelectorAll('.buzz-btn')[idx].classList.add('active');
+  
+  const qs = currentQ.round === 1 ? questionsRound1 : questionsRound2;
+  const q = qs[currentQ.cat][currentQ.idx];
+  
+  const choicesHTML = q.choices.map((c, i) => '<button class="choice-btn" onclick="answerQuestion(' + i + ', ' + q.correct + ')">' + String.fromCharCode(65+i) + '. ' + c + '</button>').join('');
+  document.getElementById('choices').innerHTML = choicesHTML;
+  document.getElementById('choices').style.display = 'grid';
+}
+
+function answerQuestion(chosen, correct) {
+  clearInterval(timerInterval);
+  const isCorrect = chosen === correct;
+  
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[correct].classList.add('correct');
+  if (chosen !== correct) btns[chosen].classList.add('incorrect');
+  
+  if (isCorrect) {
+    playBuzzer();
+    scores[currentBuzzer] += currentQ.val;
+    const board = currentQ.round === 1 ? board1 : board2;
+    board[currentQ.cat][currentQ.idx].answered = true;
+    setTimeout(() => { document.getElementById('modal').classList.remove('active'); document.getElementById('modal').classList.remove('timeout'); renderBoard(currentQ.round); }, 2000);
+  } else {
+    playWrongBuzzer();
+    document.querySelectorAll('.buzz-btn')[currentBuzzer].disabled = true;
+    const available = Array.from(document.querySelectorAll('.buzz-btn')).filter(b => !b.disabled);
+    if (available.length === 0) {
+      setTimeout(() => { document.getElementById('modal').classList.remove('active'); document.getElementById('modal').classList.remove('timeout'); renderBoard(currentQ.round); }, 2000);
+    } else {
+      currentBuzzer = -1;
+      document.getElementById('choices').style.display = 'none';
+      document.querySelectorAll('.buzz-btn').forEach(b => b.disabled = false);
+    }
+  }
+}
+
+function startTimer() {
+  let t = 30;
+  document.getElementById('timer').textContent = '30';
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    t--;
+    document.getElementById('timer').textContent = t;
+    if (t <= 0) {
+      clearInterval(timerInterval);
+      timeoutHappened = true;
+      document.getElementById('modal').classList.add('timeout');
+      playWrongBuzzer();
+      setTimeout(() => { document.getElementById('modal').classList.remove('active'); document.getElementById('modal').classList.remove('timeout'); renderBoard(currentQ.round); }, 3000);
+    }
+  }, 1000);
+}
+
+function nextRound() {
+  document.querySelector('.board-screen').classList.remove('active');
+  document.getElementById('transition').classList.add('active');
+  
+  const label = currentRound === 1 ? 'ROUND 1' : 'ROUND 2';
+  document.getElementById('transition-title').textContent = 'END OF ' + label;
+  document.getElementById('transition-scores').innerHTML = teams.map((t, i) => '<div class="score-nametag ' + teamColors[i] + '"><div class="score-header"><div class="score-hello">HELLO</div><div class="score-subtext">my name is</div></div><div class="score-area"><div class="score-name ' + teamFonts[i] + '">' + t + '</div><div class="score-value">$' + scores[i] + '</div></div></div>').join('');
+}
+
+function advanceGame() {
+  document.getElementById('transition').classList.remove('active');
+  
+  if (currentRound === 1) {
+    currentRound = 2;
+    document.querySelector('.board-screen').classList.add('active');
+    document.querySelector('.round-label').textContent = 'ROUND 2';
+    renderBoard(2);
+  } else {
+    document.getElementById('fj-screen').classList.add('active');
+    startFinalJeopardy();
+  }
+}
+
+function startFinalJeopardy() {
+  document.getElementById('fj-wagers').innerHTML = teams.map((t, i) => '<div class="team-wager"><h3 class="' + teamFonts[i] + '">' + t + '</h3><div style="color: #CCCCCC; margin-bottom: 1rem;">Current: $' + scores[i] + '</div><input type="number" class="wager-input" id="wager-' + i + '" placeholder="0" min="0"></div>').join('');
+}
+
+function revealFJClue() {
+  document.getElementById('fj-screen').classList.remove('active');
+  document.getElementById('fj-clue-screen').classList.add('active');
+  
+  document.getElementById('fj-clue-text').textContent = finalJeopardy.clue;
+  document.getElementById('fj-answers').innerHTML = teams.map((t, i) => {
+    const wager = parseInt(document.getElementById('wager-' + i).value) || 0;
+    return '<div class="team-wager"><h3 class="' + teamFonts[i] + '">' + t + '</h3><div style="color: #CCCCCC;">Wager: $' + wager + '</div><select id="fj-answer-' + i + '" style="width: 100%; padding: 8px; margin-top: 1rem;"><option value="">Select answer...</option><option value="0">A. ' + finalJeopardy.choices[0] + '</option><option value="1">B. ' + finalJeopardy.choices[1] + '</option><option value="2">C. ' + finalJeopardy.choices[2] + '</option><option value="3">D. ' + finalJeopardy.choices[3] + '</option></select><div style="color: #CCCCCC; margin-top: 0.5rem;">Current: $' + scores[i] + '</div></div>';
+  }).join('');
+}
+
+function calculateFinalScores() {
+  for (let i = 0; i < teams.length; i++) {
+    const wager = parseInt(document.getElementById('wager-' + i).value) || 0;
+    const answer = parseInt(document.getElementById('fj-answer-' + i).value) || -1;
+    
+    if (answer === finalJeopardy.correct) {
+      scores[i] += wager;
+    } else if (answer >= 0) {
+      scores[i] -= wager;
+    }
+  }
+  
+  document.getElementById('fj-clue-screen').classList.remove('active');
+  document.getElementById('game-over').classList.add('active');
+  
+  const maxScore = Math.max(...scores);
+  const winner = teams[scores.indexOf(maxScore)];
+  
+  document.getElementById('final-scores').innerHTML = teams.map((t, i) => '<div class="score-nametag ' + teamColors[i] + '"><div class="score-header"><div class="score-hello">HELLO</div><div class="score-subtext">my name is</div></div><div class="score-area"><div class="score-name ' + teamFonts[i] + '">' + t + '</div><div class="score-value">$' + scores[i] + '</div></div></div>').join('');
+  document.getElementById('winner-text').textContent = winner.toUpperCase() + ' WINS!';
+}
+</script>
+</body>
+</html>
