@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&family=Dancing+Script&family=Great+Vibes&family=Satisfy&family=Caveat&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Roboto', sans-serif; background-color: #000000; color: #FFFFFF; padding: 30px; }
-.container { max-width: 1200px; margin: 0 auto; }
+.container { max-width: 1400px; margin: 0 auto; }
 .screen { display: none; }
 .screen.active { display: block; }
 .board-screen { flex-direction: column; gap: 2rem; }
@@ -40,57 +40,59 @@ h1 { font-family: 'Bebas Neue', sans-serif; font-size: 60px; text-align: center;
 .score-header { padding: 0.6rem; color: #FFFFFF; text-align: center; }
 .score-hello { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 3px; line-height: 0.95; }
 .score-subtext { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; }
-.score-area { background: #FFFFFF; padding: 0.85rem; text-align: center; }
-.score-name { font-size: 22px; color: #111111; margin-bottom: 2px; }
+.score-area { background: #FFFFFF; padding: 1rem 0.85rem; text-align: center; }
+.score-name { font-size: 48px; color: #111111; margin-bottom: 8px; line-height: 1.1; }
 .score-name.team1 { font-family: 'Dancing Script', cursive; }
 .score-name.team2 { font-family: 'Great Vibes', cursive; }
 .score-name.team3 { font-family: 'Satisfy', cursive; }
-.score-name.team4 { font-family: 'Caveat', cursive; font-size: 26px; }
+.score-name.team4 { font-family: 'Caveat', cursive; font-size: 56px; }
 .score-value { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #111111; }
 .board { background: rgba(255,255,255,0.05); border: 3px solid #FFFFFF; border-radius: 16px; padding: 2rem; flex: 1; }
-.categories { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
-.category-tag { background: #FFFFFF; color: #111111; border-radius: 10px; padding: 1rem 0.5rem; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; min-height: 80px; display: flex; align-items: center; justify-content: center; line-height: 1.1; border: 3px solid; }
+.categories { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+.category-tag { background: #FFFFFF; color: #111111; border-radius: 10px; padding: 1rem 0.5rem; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; min-height: 80px; display: flex; align-items: center; justify-content: center; line-height: 1.2; border: 3px solid; }
 .category-tag.cat1 { border-color: #E8443B; box-shadow: 0 0 15px rgba(232,68,59,0.6); }
 .category-tag.cat2 { border-color: #4A90D9; box-shadow: 0 0 15px rgba(74,144,217,0.6); }
 .category-tag.cat3 { border-color: #8BAA5A; box-shadow: 0 0 15px rgba(139,170,90,0.6); }
 .category-tag.cat4 { border-color: #D9B400; box-shadow: 0 0 15px rgba(217,180,0,0.6); }
-.questions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+.category-tag.cat5 { border-color: #C45B9C; box-shadow: 0 0 15px rgba(196,91,156,0.6); }
+.questions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.25rem; }
 .q-nametag { border: 3px solid #FFFFFF; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-height: 110px; display: flex; flex-direction: column; }
-.q-nametag:nth-child(4n+1) .q-header { background: #E8443B; }
-.q-nametag:nth-child(4n+2) .q-header { background: #4A90D9; }
-.q-nametag:nth-child(4n+3) .q-header { background: #8BAA5A; }
-.q-nametag:nth-child(4n+4) .q-header { background: #D9B400; }
+.q-nametag:nth-child(5n+1) .q-header { background: #E8443B; }
+.q-nametag:nth-child(5n+2) .q-header { background: #4A90D9; }
+.q-nametag:nth-child(5n+3) .q-header { background: #8BAA5A; }
+.q-nametag:nth-child(5n+4) .q-header { background: #D9B400; }
+.q-nametag:nth-child(5n+5) .q-header { background: #C45B9C; }
 .q-nametag:hover:not(.answered) { transform: scale(1.08); }
 .q-nametag.answered { opacity: 0.3; cursor: not-allowed; }
 .q-header { padding: 0.5rem; color: #FFFFFF; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; }
 .q-area { background: #FFFFFF; flex: 1; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: #111111; }
-.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; transition: background 0.3s; }
 .modal-overlay.active { display: flex; }
 .modal-overlay.timeout { animation: flashred 0.5s infinite; }
-@keyframes flashred { 0%, 100% { background: rgba(0,0,0,0.95); } 50% { background: rgba(232,68,59,0.5); } }
+@keyframes flashred { 0%, 100% { background: rgba(0,0,0,0.95); } 50% { background: rgba(232,68,59,0.7); } }
 .timer-display { position: fixed; top: 30px; right: 30px; background: rgba(0,0,0,0.9); border: 3px solid #FFEE00; border-radius: 12px; padding: 15px 25px; text-align: center; z-index: 999; }
 .timer-number { font-family: 'Bebas Neue', sans-serif; font-size: 64px; color: #FFEE00; line-height: 1; font-weight: bold; }
 .timer-label { font-family: 'Roboto', sans-serif; font-size: 16px; color: #FFFFFF; letter-spacing: 2px; margin-top: 5px; }
 .timer-display.timeout .timer-number { color: #E8443B; animation: pulse 0.3s infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-.question-modal { border: 4px solid #FFFFFF; border-radius: 16px; background: #FFFFFF; max-width: 900px; width: 100%; padding: 2.5rem; color: #111111; }
+.question-modal { border: 4px solid #FFFFFF; border-radius: 16px; background: #FFFFFF; max-width: 1000px; width: 100%; padding: 2.5rem; color: #111111; }
 .category-label { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: #E8443B; letter-spacing: 2px; margin-bottom: 1rem; }
 .question-display { margin: 1rem 0 2rem; text-align: center; }
-.question-text { font-family: 'Roboto', sans-serif; font-size: 22px; line-height: 1.6; margin: 1rem 0; }
+.question-text { font-family: 'Roboto', sans-serif; font-size: 32px; line-height: 1.8; margin: 1rem 0; min-height: 150px; display: flex; align-items: center; justify-content: center; }
 .choice-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
 .choice-btn { padding: 16px; font-family: 'Bebas Neue', sans-serif; font-size: 18px; border: 3px solid #111111; background: #F5F5F5; color: #111111; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
 .choice-btn:hover { background: #111111; color: #FFFFFF; }
 .choice-btn.correct { background: #8BAA5A; color: #FFFFFF; border-color: #8BAA5A; }
 .choice-btn.incorrect { background: #E8443B; color: #FFFFFF; border-color: #E8443B; }
-.buzzers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 2rem 0; }
-.buzz-btn { padding: 20px; font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; border: 3px solid #111111; border-radius: 12px; cursor: pointer; }
-.buzz-btn.red { background: #E8443B; color: #FFFFFF; }
-.buzz-btn.blue { background: #4A90D9; color: #FFFFFF; }
-.buzz-btn.green { background: #8BAA5A; color: #FFFFFF; }
-.buzz-btn.gold { background: #D9B400; color: #000000; }
-.buzz-btn:hover:not(:disabled) { transform: scale(1.05); }
-.buzz-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.buzz-btn.active { border: 4px solid #FFFF00; box-shadow: 0 0 20px rgba(255,255,0,0.5); }
+.buzzers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 2rem 0; }
+.buzz-btn { padding: 0; border: none; cursor: pointer; width: 140px; height: 140px; border-radius: 50%; background-size: cover; background-position: center; transition: transform 0.1s, box-shadow 0.1s; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); }
+.buzz-btn:hover:not(:disabled) { transform: scale(1.08); }
+.buzz-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.buzz-btn.active { box-shadow: 0 0 30px rgba(255,255,0,0.8), inset 0 0 20px rgba(255,255,0,0.4); }
+.buzz-btn.red { background: radial-gradient(circle at 30% 30%, #FF6B6B, #E8443B, #C41E3A); }
+.buzz-btn.blue { background: radial-gradient(circle at 30% 30%, #4FA3FF, #4A90D9, #2E5C8A); }
+.buzz-btn.green { background: radial-gradient(circle at 30% 30%, #7DD87D, #8BAA5A, #5A8A3A); }
+.buzz-btn.gold { background: radial-gradient(circle at 30% 30%, #FFD700, #D9B400, #B8860B); }
 .transition-screen { text-align: center; padding: 3rem 0; }
 .transition-title { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: #FFEE00; margin-bottom: 2rem; letter-spacing: 3px; }
 .transition-btn { font-family: 'Bebas Neue', sans-serif; font-size: 32px; padding: 20px 50px; background: #FFEE00; color: #111111; border: 4px solid #FFFFFF; border-radius: 12px; cursor: pointer; letter-spacing: 2px; }
@@ -105,14 +107,14 @@ h1 { font-family: 'Bebas Neue', sans-serif; font-size: 60px; text-align: center;
 .team-wager h3.team4 { font-family: 'Caveat', cursive; font-size: 32px; }
 .wager-input { width: 100%; padding: 12px; font-size: 18px; font-family: 'Bebas Neue', sans-serif; border: 2px solid #FFEE00; background: #111111; color: #FFEE00; text-align: center; border-radius: 8px; }
 .fj-btn { font-family: 'Bebas Neue', sans-serif; font-size: 28px; padding: 16px 40px; background: #FFEE00; color: #111111; border: 3px solid #FFFFFF; border-radius: 10px; cursor: pointer; letter-spacing: 2px; margin: 1rem; }
+.fj-answer-input { width: 100%; padding: 12px; font-size: 18px; font-family: 'Roboto', sans-serif; border: 2px solid #FFEE00; background: #111111; color: #FFEE00; text-align: center; border-radius: 8px; margin-top: 1rem; }
 .end-button { width: 100%; padding: 20px; font-family: 'Bebas Neue', sans-serif; font-size: 30px; background: #E8443B; color: #FFFFFF; border: 4px solid #FFFFFF; border-radius: 14px; cursor: pointer; letter-spacing: 3px; }
 .end-button:hover { background: #C9332B; }
+.version-counter { position: fixed; bottom: 20px; right: 20px; font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: #CCCCCC; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; border: 1px solid #444444; letter-spacing: 1px; }
 </style>
 </head>
 <body>
 <div class="container">
-  
-  <div class="setup-screen screen active">
     <h1>ELECTION JEOPARDY</h1>
     <div class="team-nametags">
       <div class="nametag red"><div class="nametag-header"><div class="nametag-hello">HELLO</div><div class="nametag-subtext">my name is</div></div><div class="nametag-input-area"><input type="text" class="nametag-input" id="team1" placeholder="Team 1"></div></div>
@@ -176,10 +178,12 @@ h1 { font-family: 'Bebas Neue', sans-serif; font-size: 60px; text-align: center;
 
 </div>
 
+<div class="version-counter">v2.0</div>
+
 <script>
 const pointValues = [200, 400, 600, 800, 1000];
-const categoryNames1 = ['The Central Valley Reckoning', 'Democratic Dream Team', 'Flip the Script', 'The Progressive Playbook'];
-const categoryNames2 = ['Valley of Secrets', "Yesterday's News", 'Follow the Gold', 'The Numbers Game'];
+const categoryNames1 = ['The Central Valley Reckoning', 'Democratic Dream Team', 'Flip the Script', 'The Progressive Playbook', 'Wild Card'];
+const categoryNames2 = ['Valley of Secrets', "Yesterday's News", 'Follow the Gold', 'The Numbers Game', 'Social Moments'];
 const teamColors = ['red', 'blue', 'green', 'gold'];
 const teamFonts = ['team1', 'team2', 'team3', 'team4'];
 
@@ -208,9 +212,16 @@ const questionsRound1 = {
   'The Progressive Playbook': [
     { text: "What state does Bernie Sanders represent?", choices: ['Massachusetts', 'New Hampshire', 'Vermont', 'Maine'], correct: 2 },
     { text: "AOC represents which state?", choices: ['Massachusetts', 'New York', 'Connecticut', 'New Jersey'], correct: 1 },
-    { text: "Who endorsed Randy Villegas in CA-22?", choices: ['Elizabeth Warren', 'Bernie Sanders', 'AOC', 'All of above'], correct: 1 },
+    { text: "Who endorsed Randy Villegas in CA-22?", choices: ['Elizabeth Warren', 'Bernie Sanders', 'AOC', 'All above'], correct: 1 },
     { text: "Rashida Tlaib advocates primarily for what issues?", choices: ['Tech regulation', 'Palestinian rights & healthcare', 'Education only', 'Environment only'], correct: 1 },
     { text: "Which is Ro Khanna known for championing?", choices: ['Military spending', 'Tech regulation & climate', 'Tax cuts', 'Deregulation'], correct: 1 }
+  ],
+  'Wild Card': [
+    { text: "What year did J.D. Vance become Vice President?", choices: ['2024', '2025', '2026', '2027'], correct: 1 },
+    { text: "Marjorie Taylor Greene's Georgia seat held a special election in what year?", choices: ['2024', '2025', '2026', '2027'], correct: 2 },
+    { text: "Marco Rubio now holds what Cabinet position?", choices: ['Secretary of Defense', 'Secretary of State', 'Secretary of Treasury', 'Attorney General'], correct: 1 },
+    { text: "Zohran Mamdani was elected to what office in 2026?", choices: ['Governor', 'Mayor of NYC', 'Senator', 'House Member'], correct: 1 },
+    { text: "Abigail Spanberger won governor in which state?", choices: ['Maryland', 'Virginia', 'Pennsylvania', 'North Carolina'], correct: 1 }
   ]
 };
 
@@ -219,15 +230,15 @@ const questionsRound2 = {
     { text: "What is the largest city in CA-22?", choices: ['Visalia', 'Hanford', 'Bakersfield', 'Delano'], correct: 2 },
     { text: "The Central Valley is known for what?", choices: ["Hollywood production", "America's breadbasket", 'Gold mining', 'Tech innovation'], correct: 1 },
     { text: "What major environmental issue affects the Valley?", choices: ['Water scarcity', 'Agricultural pollution & asthma', 'Wildfires only', 'Earthquakes'], correct: 1 },
-    { text: "A key conflict in water rights is between:", choices: ['Farmers & fishermen', 'Cities & farms', 'Environmental protection & agriculture', 'All of above'], correct: 3 },
+    { text: "A key conflict in water rights is between:", choices: ['Farmers & fishermen', 'Cities & farms', 'Environmental protection & agriculture', 'All above'], correct: 3 },
     { text: "Agricultural consolidation impacts farm workers how?", choices: ['Higher wages', 'Better conditions', 'Reduced bargaining power', 'More job options'], correct: 2 }
   ],
   "Yesterday's News": [
     { text: "Who signed the Voting Rights Act of 1965?", choices: ['JFK', 'LBJ', 'Truman', 'Eisenhower'], correct: 1 },
     { text: "In what year did women gain voting rights?", choices: ['1890', '1900', '1920', '1945'], correct: 2 },
-    { text: "The Southern Strategy shift aligned South with which party?", choices: ['Democrats', 'Republicans', 'Independents', 'Populists'], correct: 1 },
+    { text: "The Southern Strategy aligned South with which party?", choices: ['Democrats', 'Republicans', 'Independents', 'Populists'], correct: 1 },
     { text: "The Tea Party emerged in what year?", choices: ['2007', '2008', '2009', '2010'], correct: 2 },
-    { text: "The Contract with America was associated with whom?", choices: ['Bob Dole', 'Newt Gingrich', 'Trent Lott', 'Dick Armey'], correct: 1 }
+    { text: "Contract with America was associated with whom?", choices: ['Bob Dole', 'Newt Gingrich', 'Trent Lott', 'Dick Armey'], correct: 1 }
   ],
   'Follow the Gold': [
     { text: "What does PAC stand for?", choices: ['Political Action Council', 'Political Action Committee', 'Public Affairs Campaign', 'Policy Action Committee'], correct: 1 },
@@ -242,6 +253,13 @@ const questionsRound2 = {
     { text: "Hispanic/Latino population is approximately what %?", choices: ['10%', '15%', '19-20%', '25%'], correct: 2 },
     { text: "Purple states are those that are:", choices: ['Safe Democratic', 'Safe Republican', 'Competitive between parties', 'Independent only'], correct: 2 },
     { text: "Working-class voters without college degrees lean toward:", choices: ['Democrats', 'Republicans', 'Independents', 'No party'], correct: 1 }
+  ],
+  'Social Moments': [
+    { text: "What platform did Trump use before being banned?", choices: ['Facebook', 'Twitter', 'Threads', 'TikTok'], correct: 1 },
+    { text: "TikTok is major platform for which demographic?", choices: ['Boomers', 'Gen X', 'Millennials', 'Gen Z'], correct: 3 },
+    { text: "Musk's Twitter acquisition led to what change?", choices: ['More moderation', 'Removed fact-checking labels', 'Banned all politicians', 'Required real names'], correct: 1 },
+    { text: "Threads launched in what year?", choices: ['2022', '2023', '2024', '2025'], correct: 1 },
+    { text: "Viral moments most influence what?", choices: ['Stock prices', 'Candidate perception', 'Sports scores', 'Weather forecasts'], correct: 1 }
   ]
 };
 
@@ -258,16 +276,10 @@ function playBuzzer() { const audioContext = new (window.AudioContext || window.
 function playWrongBuzzer() { const audioContext = new (window.AudioContext || window.webkitAudioContext)(); const osc = audioContext.createOscillator(); const gain = audioContext.createGain(); osc.connect(gain); gain.connect(audioContext.destination); osc.frequency.setValueAtTime(400, audioContext.currentTime); osc.frequency.linearRampToValueAtTime(200, audioContext.currentTime + 0.5); gain.gain.setValueAtTime(0.3, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5); osc.start(audioContext.currentTime); osc.stop(audioContext.currentTime + 0.5); }
 
 function startGame() {
-  teams = [
-    document.getElementById('team1').value || 'Team 1',
-    document.getElementById('team2').value || 'Team 2',
-    document.getElementById('team3').value || 'Team 3',
-    document.getElementById('team4').value || 'Team 4'
-  ];
+  teams = [document.getElementById('team1').value || 'Team 1', document.getElementById('team2').value || 'Team 2', document.getElementById('team3').value || 'Team 3', document.getElementById('team4').value || 'Team 4'];
   scores = [0, 0, 0, 0];
   categoryNames1.forEach(cat => { board1[cat] = pointValues.map(v => ({ answered: false })); });
   categoryNames2.forEach(cat => { board2[cat] = pointValues.map(v => ({ answered: false })); });
-  
   document.querySelector('.setup-screen').classList.remove('active');
   document.querySelector('.board-screen').classList.add('active');
   currentRound = 1;
@@ -278,7 +290,7 @@ function renderBoard(round) {
   const cats = round === 1 ? categoryNames1 : categoryNames2;
   let catHTML = '';
   cats.forEach((c, idx) => {
-    const catClass = 'cat' + ((idx % 4) + 1);
+    const catClass = 'cat' + ((idx % 5) + 1);
     catHTML += '<div class="category-tag ' + catClass + '">' + c + '</div>';
   });
   document.getElementById('categories').innerHTML = catHTML;
@@ -315,7 +327,7 @@ function openQuestion(round, cat, idx) {
   document.getElementById('q-category').textContent = cat + ' for $' + val;
   document.getElementById('question-text').textContent = q.text;
   
-  const buzzers = teams.map((t, i) => '<button class="buzz-btn ' + teamColors[i] + '" onclick="buzz(' + i + ')">' + t + '</button>').join('');
+  const buzzers = teams.map((t, i) => '<button class="buzz-btn ' + teamColors[i] + '" onclick="buzz(' + i + ')"></button>').join('');
   document.getElementById('buzzers').innerHTML = buzzers;
   document.getElementById('choices').style.display = 'none';
   
@@ -360,6 +372,7 @@ function answerQuestion(chosen, correct) {
     document.querySelectorAll('.buzz-btn')[currentBuzzer].disabled = true;
     const available = Array.from(document.querySelectorAll('.buzz-btn')).filter(b => !b.disabled);
     if (available.length === 0) {
+      document.getElementById('modal').classList.add('timeout');
       setTimeout(() => { document.getElementById('modal').classList.remove('active'); document.getElementById('modal').classList.remove('timeout'); renderBoard(currentQ.round); }, 2000);
     } else {
       currentBuzzer = -1;
@@ -420,18 +433,19 @@ function revealFJClue() {
   document.getElementById('fj-clue-text').textContent = finalJeopardy.clue;
   document.getElementById('fj-answers').innerHTML = teams.map((t, i) => {
     const wager = parseInt(document.getElementById('wager-' + i).value) || 0;
-    return '<div class="team-wager"><h3 class="' + teamFonts[i] + '">' + t + '</h3><div style="color: #CCCCCC;">Wager: $' + wager + '</div><select id="fj-answer-' + i + '" style="width: 100%; padding: 8px; margin-top: 1rem;"><option value="">Select answer...</option><option value="0">A. ' + finalJeopardy.choices[0] + '</option><option value="1">B. ' + finalJeopardy.choices[1] + '</option><option value="2">C. ' + finalJeopardy.choices[2] + '</option><option value="3">D. ' + finalJeopardy.choices[3] + '</option></select><div style="color: #CCCCCC; margin-top: 0.5rem;">Current: $' + scores[i] + '</div></div>';
+    return '<div class="team-wager"><h3 class="' + teamFonts[i] + '">' + t + '</h3><div style="color: #CCCCCC;">Wager: $' + wager + '</div><input type="text" class="fj-answer-input" id="fj-answer-' + i + '" placeholder="Type answer..."><div style="color: #CCCCCC; margin-top: 0.5rem;">Current: $' + scores[i] + '</div></div>';
   }).join('');
 }
 
 function calculateFinalScores() {
   for (let i = 0; i < teams.length; i++) {
     const wager = parseInt(document.getElementById('wager-' + i).value) || 0;
-    const answer = parseInt(document.getElementById('fj-answer-' + i).value) || -1;
+    const answer = document.getElementById('fj-answer-' + i).value.toLowerCase();
+    const correct = finalJeopardy.choices[finalJeopardy.correct].toLowerCase();
     
-    if (answer === finalJeopardy.correct) {
+    if (answer.includes(correct.split(' ')[0]) || correct.includes(answer.split(' ')[0])) {
       scores[i] += wager;
-    } else if (answer >= 0) {
+    } else if (answer.length > 0) {
       scores[i] -= wager;
     }
   }
