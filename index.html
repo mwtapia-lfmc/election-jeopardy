@@ -44,8 +44,8 @@ h1 { font-family: 'Bebas Neue', sans-serif; font-size: 60px; text-align: center;
 .start-button:hover { background: #FFF54D; }
 .reset-button { background: #E8443B; color: #FFFFFF; }
 .reset-button:hover { background: #C9332B; }
-.scoreboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; max-width: 1000px; margin-left: auto; margin-right: auto; }
-.score-nametag { border: 4px solid #FFFFFF; border-radius: 12px; overflow: hidden; }
+.scoreboard { display: flex; gap: 2rem; margin-bottom: 3rem; justify-content: center; flex-wrap: nowrap; }
+.score-nametag { border: 4px solid #FFFFFF; border-radius: 14px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,0.6); transition: transform 0.2s; }
 .score-nametag.red .score-header { background: #E8443B; }
 .score-nametag.blue .score-header { background: #4A90D9; }
 .score-nametag.green .score-header { background: #8BAA5A; }
@@ -420,7 +420,7 @@ body.game-screen {
 
 <div class="container">
   <div class="header-wrapper">
-    <div class="version-display">v5.14</div>
+    <div class="version-display">v5.16</div>
     <div class="logo-header" onclick="goHome()">
       <h1>ELECTION JEOPARDY</h1>
     </div>
