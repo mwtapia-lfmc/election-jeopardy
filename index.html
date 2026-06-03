@@ -246,7 +246,7 @@ h1 { font-family: 'Bebas Neue', sans-serif; font-size: 60px; text-align: center;
 .fj-wagers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin: 2rem 0; }
 .team-wager { padding: 1.5rem; background: rgba(255,255,255,0.1); border: 2px solid #FFFFFF; border-radius: 12px; color: #FFFFFF; }
 .team-wager h3 { font-size: 28px; margin-bottom: 1rem; color: #FFFFFF; font-family: 'Roboto', sans-serif; font-weight: 700; }
-.wager-input { width: 100%; padding: 12px; font-size: 18px; font-family: 'Bebas Neue', sans-serif; border: 2px solid #FFEE00; background: #111111; color: #FFEE00; text-align: center; border-radius: 8px; }
+.wager-input { width: 100%; padding: 12px; font-size: 18px; font-family: 'Bebas Neue', sans-serif; border: 2px solid #FFEE00; background: #FFFFFF; color: #111111; text-align: center; border-radius: 8px; }
 .fj-btn { font-family: 'Bebas Neue', sans-serif; font-size: 28px; padding: 16px 40px; background: #FFEE00; color: #111111; border: 3px solid #FFFFFF; border-radius: 10px; cursor: pointer; letter-spacing: 2px; margin: 1rem; }
 .fj-answer-input { width: 100%; padding: 12px; font-size: 18px; font-family: 'Roboto', sans-serif; border: 2px solid #FFEE00; background: #111111; color: #FFEE00; text-align: center; border-radius: 8px; margin-top: 1rem; }
 .fj-choice-grid {
@@ -478,8 +478,10 @@ body.game-screen {
   <div class="final-jeopardy-screen screen" id="fj-screen">
     <div class="fj-title">FINAL JEOPARDY</div>
     <div class="fj-wagers" id="fj-wagers"></div>
-    <button class="fj-btn" onclick="revealFJClue()">REVEAL CLUE</button>
-    <button class="control-btn reset-btn" onclick="showResetConfirm()" style="margin-top: 2rem;">RESET</button>
+    <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items: center; margin-top: 2rem;">
+      <button class="fj-btn" onclick="revealFJClue()">REVEAL CLUE</button>
+      <button class="control-btn reset-btn" onclick="showResetConfirm()">RESET</button>
+    </div>
   </div>
 
   <div class="screen" id="fj-clue-screen">
@@ -619,7 +621,7 @@ const finalJeopardy = {
   correct: 0
 };
 
-let teams = [], scores = [], roundData = {}, currentRound = 1, currentQ = null, timerInterval = null, currentBuzzer = -1, canGoPrevious = false, lockedTeams = [];
+let teams = [], scores = [], roundScores = { 1: [], 2: [] }, roundData = {}, currentRound = 1, currentQ = null, timerInterval = null, currentBuzzer = -1, canGoPrevious = false, lockedTeams = [];
 
 function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
 
@@ -933,6 +935,9 @@ function previousRound() {
 }
 
 function nextRound() {
+  // Capture scores at end of this round
+  roundScores[currentRound] = [...scores];
+  
   document.querySelector('.board-screen').classList.remove('active');
   document.getElementById('transition').classList.add('active');
   canGoPrevious = true;
@@ -957,7 +962,26 @@ function advanceGame() {
 }
 
 function startFinalJeopardy() {
-  document.getElementById('fj-wagers').innerHTML = teams.map((t, i) => '<div class="team-wager"><h3>' + t + '</h3><div style="color: #CCCCCC; margin-bottom: 1rem;">Current: $' + scores[i] + '</div><input type="number" class="wager-input" id="wager-' + i + '" placeholder="0" min="0"></div>').join('');
+  let html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin: 2rem 0;">';
+  
+  teams.forEach((t, i) => {
+    const r1Score = roundScores[1][i] || 0;
+    const r2Score = roundScores[2][i] || 0;
+    const currentScore = scores[i];
+    
+    html += '<div class="score-nametag ' + teamColors[i] + '" style="padding: 0; overflow: hidden;">';
+    html += '<div class="score-header"><div class="score-hello">HELLO</div><div class="score-subtext">my name is</div></div>';
+    html += '<div class="score-area" style="padding: 1.5rem 1rem;">';
+    html += '<div class="score-name">' + t + '</div>';
+    html += '<div style="color: #666666; font-size: 14px; margin: 1rem 0; line-height: 1.6;">Round 1: $' + r1Score + ' | Round 2: $' + r2Score + '<br>Current Total: $' + currentScore + '</div>';
+    html += '<input type="number" class="wager-input" id="wager-' + i + '" placeholder="Enter wager" min="0" style="margin-top: 1rem;">';
+    html += '<div style="color: #999999; font-size: 12px; margin-top: 0.5rem;">Wager Amount</div>';
+    html += '</div>';
+    html += '</div>';
+  });
+  
+  html += '</div>';
+  document.getElementById('fj-wagers').innerHTML = html;
 }
 
 let fjCurrentTeam = 0;
