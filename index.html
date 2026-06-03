@@ -403,7 +403,15 @@ body.game-screen {
     <button class="info-close" onclick="closeInfoModal('about-modal')">&times;</button>
     <h2>About</h2>
     <p>Election Jeopardy is a political trivia game built for Zoom calls and live events — a fast, friendly way to test what your group knows about candidates, districts, and the road to the next election.</p>
-    <p>Made by Michael Tapia.</p>
+    
+    <h3 style="margin-top: 2rem; color: #FFEE00; font-size: 18px;">HOW TO PLAY</h3>
+    <ul style="color: #CCCCCC; font-size: 15px; line-height: 1.8; margin: 1rem 0;">
+      <li><strong>Team Chats:</strong> Each team creates their own Zoom chat. Use it to strategize answers and discuss wagers.</li>
+      <li><strong>Controller Selection:</strong> Since everyone can't access the webpage at once, one person from each team <strong>yells out their team color or name</strong>. Whoever yells fastest gets to control the board for that round.</li>
+      <li><strong>Controller Duty:</strong> The controller drags the team game piece to answers, manages wagers, and represents their team on screen.</li>
+    </ul>
+    
+    <p style="margin-top: 2rem;">Made by Michael Tapia.</p>
   </div>
 </div>
 
@@ -487,10 +495,14 @@ body.game-screen {
   </div>
 
   <div class="screen" id="fj-clue-screen">
+    <div style="position: fixed; top: 30px; right: 30px; background: rgba(0,0,0,0.9); border: 4px solid #FFEE00; border-radius: 12px; padding: 20px 30px; text-align: center; z-index: 999;">
+      <div id="fj-timer" style="font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: #FFEE00; line-height: 1; font-weight: bold;">30</div>
+      <div style="font-family: 'Roboto', sans-serif; font-size: 14px; color: #FFFFFF; letter-spacing: 2px; margin-top: 8px;">SECONDS</div>
+    </div>
     <div style="text-align: center; padding: 2rem;">
       <div class="fj-title" id="fj-clue-text">Clue</div>
       <div class="fj-wagers" id="fj-answers"></div>
-      <button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;">CALCULATE FINAL SCORES</button>
+      <button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;">REVEAL ANSWER</button>
       <button class="control-btn reset-btn" onclick="showResetConfirm()" style="margin-top: 1rem;">RESET</button>
     </div>
   </div>
@@ -1044,20 +1056,23 @@ function advanceGame() {
 }
 
 function startFinalJeopardy() {
-  let html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem; margin: 2rem auto; max-width: 900px; width: 90%; padding: 0 2rem;">';
+  let html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem; margin: 3rem auto; max-width: 1100px; width: 92%; padding: 0 2rem;">';
   
   teams.forEach((t, i) => {
     const r1Score = roundScores[1][i] || 0;
     const r2Score = roundScores[2][i] || 0;
     const currentScore = scores[i];
     
-    html += '<div class="score-nametag ' + teamColors[i] + '" style="padding: 0; overflow: hidden;">';
-    html += '<div class="score-header"><div class="score-hello">HELLO</div><div class="score-subtext">my name is</div></div>';
-    html += '<div class="score-area" style="padding: 2.5rem 1.5rem; min-height: 220px; display: flex; flex-direction: column; justify-content: center;">';
-    html += '<div class="score-name" style="font-size: 52px;">' + t + '</div>';
-    html += '<div style="color: #666666; font-size: 22px; margin: 1.5rem 0; line-height: 1.8; font-weight: 600;">Round 1: $' + r1Score + '<br>Round 2: $' + r2Score + '<br>Total: $' + currentScore + '</div>';
-    html += '<input type="number" class="wager-input" id="wager-' + i + '" placeholder="Enter wager ($50 increments)" min="0" max="' + currentScore + '" step="50" style="margin-top: 1.5rem; font-size: 20px; padding: 14px;">';
-    html += '<div style="color: #999999; font-size: 13px; margin-top: 0.75rem; letter-spacing: 0.5px;">WAGER AMOUNT</div>';
+    html += '<div class="score-nametag ' + teamColors[i] + '" style="padding: 0; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.5); border-radius: 16px;">';
+    html += '<div class="score-header" style="padding: 1.5rem;"><div class="score-hello">HELLO</div><div class="score-subtext">my name is</div></div>';
+    html += '<div class="score-area" style="padding: 3rem 2rem; min-height: 280px; display: flex; flex-direction: column; justify-content: flex-start; background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);border-radius: 0 0 16px 16px;">';
+    html += '<div class="score-name" style="font-size: 48px; margin-bottom: 1.5rem;">' + t + '</div>';
+    html += '<div style="color: #888888; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 600;">Previous Scores</div>';
+    html += '<div style="color: #CCCCCC; font-size: 18px; margin-bottom: 2rem; line-height: 1.8; font-weight: 500;">Round 1: <span style="color: #FFEE00; font-weight: 700;">$' + r1Score + '</span><br>Round 2: <span style="color: #FFEE00; font-weight: 700;">$' + r2Score + '</span></div>';
+    html += '<div style="color: #888888; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.75rem; font-weight: 600;">Current Total</div>';
+    html += '<div style="color: #FFEE00; font-size: 36px; font-weight: 700; margin-bottom: 2rem;">$' + currentScore + '</div>';
+    html += '<div style="color: #888888; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.75rem; font-weight: 600;">Your Wager ($50 increments)</div>';
+    html += '<div style="position: relative;"><span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #FFEE00; font-size: 20px; font-weight: bold;">$</span><input type="number" class="wager-input" id="wager-' + i + '" placeholder="0" min="0" max="' + currentScore + '" step="50" style="margin-top: 0; font-size: 24px; padding: 14px 14px 14px 40px; text-align: left; font-weight: 600;"></div>';
     html += '</div>';
     html += '</div>';
   });
@@ -1088,18 +1103,36 @@ function checkWagers() {
 function playFJMusic() {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const t = ctx.currentTime;
-  [523, 659, 784, 1047].forEach((freq, i) => {
-    const start = t + 5 + (i * 5);
+  // More urgent: higher freqs, faster, louder
+  [800, 1000, 1200, 1400].forEach((freq, i) => {
+    const start = t + (i * 1);
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.frequency.value = freq;
-    gain.gain.setValueAtTime(0.2, start);
-    gain.gain.exponentialRampToValueAtTime(0.01, start + 4.5);
+    gain.gain.setValueAtTime(0.35, start);
+    gain.gain.exponentialRampToValueAtTime(0.05, start + 4);
     osc.start(start);
     osc.stop(start + 5);
   });
+}
+
+function startFJTimer() {
+  let timeLeft = 30;
+  const timerDisplay = document.getElementById('fj-timer');
+  if (!timerDisplay) return;
+  
+  timerDisplay.textContent = timeLeft;
+  const timerInterval = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timerDisplay.textContent = 'TIME!';
+      timerDisplay.style.color = '#E8443B';
+    }
+  }, 1000);
 }
 
 let fjCurrentTeam = 0;
@@ -1107,63 +1140,95 @@ let fjTeamAnswers = {};
 
 function revealFJClue() {
   playFJMusic();
-  setTimeout(() => {
-    document.getElementById('fj-screen').classList.remove('active');
-    document.getElementById('fj-clue-screen').classList.add('active');
-    document.getElementById('fj-clue-text').textContent = finalJeopardy.clue;
-    fjTeamAnswers = {};
-    fjCurrentTeam = 0;
-    renderFJChoices();
-  }, 5000);
+  document.getElementById('fj-screen').classList.remove('active');
+  document.getElementById('fj-clue-screen').classList.add('active');
+  document.getElementById('fj-clue-text').textContent = finalJeopardy.clue;
+  fjTeamAnswers = {};
+  fjCurrentTeam = 0;
+  renderFJChoices();
+  startFJTimer();
 }
 
 function renderFJChoices() {
   const choiceLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
-  let html = '<div style="margin-top: 2rem; margin-bottom: 1.5rem;"><div style="font-size: 18px; color: #FFEE00; margin-bottom: 1rem; letter-spacing: 1px;">SELECT YOUR ANSWER:</div>';
-  html += '<div class="fj-choice-grid">';
+  let html = '<div style="margin-top: 2rem;">';
   
+  // Answer boxes (drop targets)
+  html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; max-width: 1000px; margin-left: auto; margin-right: auto;">';
   finalJeopardy.choices.forEach((choice, idx) => {
-    const btnId = 'fj-choice-' + idx;
-    const isSelected = fjTeamAnswers[fjCurrentTeam] === idx;
-    const selectedClass = isSelected ? 'selected' : '';
-    html += '<button class="fj-choice-btn ' + selectedClass + '" id="' + btnId + '" onclick="selectFJChoice(' + idx + ')">' + choiceLetters[idx] + ') ' + choice + '</button>';
-  });
-  html += '</div></div>';
-  
-  // Team status
-  html += '<div style="margin-top: 2rem; padding-top: 2rem; border-top: 3px solid #444444;">';
-  teams.forEach((t, i) => {
-    const wager = parseInt(document.getElementById('wager-' + i).value) || 0;
-    const answered = fjTeamAnswers.hasOwnProperty(i);
-    const choiceIdx = fjTeamAnswers[i];
-    const choiceLetter = answered ? ['A', 'B', 'C', 'D', 'E', 'F'][choiceIdx] : '—';
-    const statusColor = i === fjCurrentTeam ? '#FFEE00' : answered ? '#8BAA5A' : '#CCCCCC';
-    const isCurrent = i === fjCurrentTeam ? '🎤 ' : '';
-    
-    html += '<div style="margin-bottom: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-left: 4px solid ' + statusColor + '; border-radius: 8px;">';
-    html += '<div style="color: ' + statusColor + '; font-weight: bold; font-size: 18px; margin-bottom: 0.25rem;">' + isCurrent + t + '</div>';
-    html += '<div style="color: #CCCCCC; font-size: 14px;">Wager: $' + wager + ' | Answer: ' + choiceLetter + (answered ? ' (' + finalJeopardy.choices[choiceIdx] + ')' : '') + '</div>';
+    html += '<div class="fj-drop-zone" id="drop-' + idx + '" style="border: 3px solid #FFFFFF; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 2rem; text-align: center; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center;">';
+    html += '<div style="font-size: 32px; font-weight: bold; color: #FFEE00; margin-bottom: 0.5rem;">' + choiceLetters[idx] + ')</div>';
+    html += '<div style="font-size: 18px; color: #FFFFFF; margin-bottom: 1rem;">' + choice + '</div>';
+    html += '<div id="team-at-' + idx + '" style="font-size: 14px; color: #8BAA5A; font-weight: bold; min-height: 20px;"></div>';
     html += '</div>';
   });
   html += '</div>';
   
-  // Submit button (enabled only if all teams answered)
-  const allAnswered = teams.length === Object.keys(fjTeamAnswers).length;
-  html += '<button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;" ' + (allAnswered ? '' : 'disabled') + '>REVEAL ANSWER</button>';
+  // Team pieces (draggable)
+  html += '<div style="text-align: center; margin: 3rem 0; padding-top: 2rem; border-top: 3px solid #444444;">';
+  html += '<div style="font-size: 18px; color: #FFEE00; margin-bottom: 1.5rem; letter-spacing: 1px;">DRAG TEAM TO ANSWER:</div>';
+  html += '<div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">';
+  teams.forEach((t, i) => {
+    const selected = fjTeamAnswers[i];
+    const selectedText = selected !== undefined ? ' → ' + choiceLetters[selected] : '';
+    html += '<div draggable="true" class="fj-team-piece" id="team-' + i + '" data-team="' + i + '" style="background: #' + (teamColors[i] === 'red' ? 'E8443B' : teamColors[i] === 'blue' ? '4A90D9' : teamColors[i] === 'green' ? '8BAA5A' : 'D9B400') + '; color: #FFFFFF; padding: 1.5rem 2rem; border-radius: 12px; cursor: move; font-weight: bold; font-size: 18px; user-select: none; border: 3px solid #FFFFFF;">' + t + selectedText + '</div>';
+  });
+  html += '</div></div>';
+  
+  html += '<div style="text-align: center; margin-top: 3rem;">';
+  html += '<button class="fj-btn" onclick="lockFJAnswers()" style="margin-right: 1rem;">LOCK ANSWERS</button>';
+  html += '</div>';
+  html += '</div>';
   
   document.getElementById('fj-answers').innerHTML = html;
+  
+  // Setup drag and drop
+  setTimeout(() => {
+    document.querySelectorAll('.fj-team-piece').forEach(piece => {
+      piece.addEventListener('dragstart', (e) => {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('team', piece.dataset.team);
+      });
+    });
+    
+    document.querySelectorAll('.fj-drop-zone').forEach((zone, idx) => {
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        zone.style.background = 'rgba(255, 238, 0, 0.2)';
+      });
+      zone.addEventListener('dragleave', () => {
+        zone.style.background = 'rgba(255,255,255,0.05)';
+      });
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const teamIdx = parseInt(e.dataTransfer.getData('team'));
+        fjTeamAnswers[teamIdx] = idx;
+        zone.style.background = 'rgba(255,255,255,0.05)';
+        renderFJChoices();
+      });
+    });
+  }, 100);
 }
 
-function selectFJChoice(choiceIdx) {
-  fjTeamAnswers[fjCurrentTeam] = choiceIdx;
+function lockFJAnswers() {
+  // Voice announce each answer
+  const choiceLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
+  teams.forEach((t, i) => {
+    if (fjTeamAnswers[i] !== undefined) {
+      const choice = choiceLetters[fjTeamAnswers[i]];
+      const utterance = new SpeechSynthesisUtterance(t + ' picks ' + choice);
+      utterance.rate = 1;
+      speechSynthesis.speak(utterance);
+    }
+  });
   
-  // Move to next team
-  if (fjCurrentTeam < teams.length - 1) {
-    fjCurrentTeam++;
-  }
-  
-  // Re-render to show updated state
-  renderFJChoices();
+  // After voice finishes, show REVEAL ANSWER button
+  setTimeout(() => {
+    document.querySelector('.fj-btn').style.display = 'none';
+    let html = '<button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;">REVEAL ANSWER</button>';
+    document.querySelector('[onclick="lockFJAnswers()"]').parentElement.innerHTML = html;
+  }, 3000);
 }
 
 function calculateFinalScores() {
