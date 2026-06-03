@@ -477,10 +477,10 @@ body.game-screen {
 
   <div class="final-jeopardy-screen screen" id="fj-screen">
     <div class="fj-title">FINAL JEOPARDY</div>
-    <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 2rem;">
-      <button class="fj-btn" onclick="revealFJClue()">REVEAL CLUE</button>
-    </div>
     <div class="fj-wagers" id="fj-wagers"></div>
+    <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items: center; margin-top: 2rem;">
+      <button class="fj-btn" id="reveal-clue-btn" onclick="revealFJClue()" disabled>REVEAL CLUE</button>
+    </div>
     <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items: center; margin-top: 2rem;">
       <button class="control-btn reset-btn" onclick="showResetConfirm()">RESET</button>
     </div>
@@ -1056,7 +1056,7 @@ function startFinalJeopardy() {
     html += '<div class="score-area" style="padding: 2.5rem 1.5rem; min-height: 220px; display: flex; flex-direction: column; justify-content: center;">';
     html += '<div class="score-name" style="font-size: 52px;">' + t + '</div>';
     html += '<div style="color: #666666; font-size: 22px; margin: 1.5rem 0; line-height: 1.8; font-weight: 600;">Round 1: $' + r1Score + '<br>Round 2: $' + r2Score + '<br>Total: $' + currentScore + '</div>';
-    html += '<input type="number" class="wager-input" id="wager-' + i + '" placeholder="Enter wager" min="0" max="' + currentScore + '" style="margin-top: 1.5rem; font-size: 20px; padding: 14px;">';
+    html += '<input type="number" class="wager-input" id="wager-' + i + '" placeholder="Enter wager ($50 increments)" min="0" max="' + currentScore + '" step="50" style="margin-top: 1.5rem; font-size: 20px; padding: 14px;">';
     html += '<div style="color: #999999; font-size: 13px; margin-top: 0.75rem; letter-spacing: 0.5px;">WAGER AMOUNT</div>';
     html += '</div>';
     html += '</div>';
@@ -1064,23 +1064,57 @@ function startFinalJeopardy() {
   
   html += '</div>';
   document.getElementById('fj-wagers').innerHTML = html;
+  
+  setTimeout(() => {
+    teams.forEach((t, i) => {
+      const input = document.getElementById('wager-' + i);
+      if (input) {
+        input.addEventListener('input', checkWagers);
+        input.addEventListener('change', checkWagers);
+      }
+    });
+  }, 100);
+}
+
+function checkWagers() {
+  const allFilled = teams.every((t, i) => {
+    const val = document.getElementById('wager-' + i).value;
+    return val !== '' && val !== null;
+  });
+  const btn = document.getElementById('reveal-clue-btn');
+  if (btn) btn.disabled = !allFilled;
+}
+
+function playFJMusic() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const t = ctx.currentTime;
+  [523, 659, 784, 1047].forEach((freq, i) => {
+    const start = t + 5 + (i * 5);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.2, start);
+    gain.gain.exponentialRampToValueAtTime(0.01, start + 4.5);
+    osc.start(start);
+    osc.stop(start + 5);
+  });
 }
 
 let fjCurrentTeam = 0;
 let fjTeamAnswers = {};
 
 function revealFJClue() {
-  document.getElementById('fj-screen').classList.remove('active');
-  document.getElementById('fj-clue-screen').classList.add('active');
-  
-  document.getElementById('fj-clue-text').textContent = finalJeopardy.clue;
-  
-  // Initialize team answers tracking
-  fjTeamAnswers = {};
-  fjCurrentTeam = 0;
-  
-  // Render choice buttons grid + team status
-  renderFJChoices();
+  playFJMusic();
+  setTimeout(() => {
+    document.getElementById('fj-screen').classList.remove('active');
+    document.getElementById('fj-clue-screen').classList.add('active');
+    document.getElementById('fj-clue-text').textContent = finalJeopardy.clue;
+    fjTeamAnswers = {};
+    fjCurrentTeam = 0;
+    renderFJChoices();
+  }, 5000);
 }
 
 function renderFJChoices() {
@@ -1115,7 +1149,7 @@ function renderFJChoices() {
   
   // Submit button (enabled only if all teams answered)
   const allAnswered = teams.length === Object.keys(fjTeamAnswers).length;
-  html += '<button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;" ' + (allAnswered ? '' : 'disabled') + '>CALCULATE FINAL SCORES</button>';
+  html += '<button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;" ' + (allAnswered ? '' : 'disabled') + '>REVEAL ANSWER</button>';
   
   document.getElementById('fj-answers').innerHTML = html;
 }
@@ -1133,26 +1167,29 @@ function selectFJChoice(choiceIdx) {
 }
 
 function calculateFinalScores() {
-  for (let i = 0; i < teams.length; i++) {
-    const wager = parseInt(document.getElementById('wager-' + i).value) || 0;
-    const teamChoice = fjTeamAnswers[i];
-    const isCorrect = (teamChoice === finalJeopardy.correct);
-    
-    if (isCorrect) {
-      scores[i] += wager;
-    } else if (teamChoice !== undefined) {
-      scores[i] -= wager;
+  const choiceLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const correctChoice = finalJeopardy.choices[finalJeopardy.correct];
+  document.getElementById('fj-answers').innerHTML = '<div style="text-align: center; font-size: 36px; color: #8BAA5A; margin: 3rem 0; font-weight: bold;">CORRECT ANSWER:<br>' + choiceLetters[finalJeopardy.correct] + ') ' + correctChoice + '</div>';
+  
+  setTimeout(() => {
+    for (let i = 0; i < teams.length; i++) {
+      const wager = parseInt(document.getElementById('wager-' + i).value) || 0;
+      const teamChoice = fjTeamAnswers[i];
+      const isCorrect = (teamChoice === finalJeopardy.correct);
+      if (isCorrect) scores[i] += wager;
+      else if (teamChoice !== undefined) scores[i] -= wager;
     }
-  }
-  
-  document.getElementById('fj-clue-screen').classList.remove('active');
-  document.getElementById('game-over').classList.add('active');
-  
-  const maxScore = Math.max(...scores);
-  const winner = teams[scores.indexOf(maxScore)];
-  
-  document.getElementById('final-scores').innerHTML = teams.map((t, i) => '<div class="score-nametag ' + teamColors[i] + '"><div class="score-header"><div class="score-hello">HELLO</div><div class="score-subtext">my name is</div></div><div class="score-area"><div class="score-name">' + t + '</div><div class="score-value">$' + scores[i] + '</div></div></div>').join('');
-  document.getElementById('winner-text').textContent = winner.toUpperCase() + ' WINS!';
+    
+    document.getElementById('fj-clue-screen').classList.remove('active');
+    document.getElementById('game-over').classList.add('active');
+    
+    const maxScore = Math.max(...scores);
+    const winnerIdx = scores.indexOf(maxScore);
+    const winner = teams[winnerIdx];
+    
+    document.getElementById('final-scores').innerHTML = '';
+    document.getElementById('winner-text').innerHTML = '<div style="font-size: 72px; color: #FFEE00; margin-bottom: 1rem;">🏆</div><div style="font-size: 56px; margin-bottom: 1.5rem;">' + winner.toUpperCase() + '</div><div style="font-size: 48px; color: #FFEE00; margin-bottom: 1rem;">YOU WIN!</div><div style="font-size: 40px; color: #8BAA5A;">$' + scores[winnerIdx] + '</div>';
+  }, 3000);
 }
 
 // Logo click handler - go home
