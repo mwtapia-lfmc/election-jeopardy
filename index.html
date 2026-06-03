@@ -542,7 +542,7 @@ body.game-screen {
 <script>
 const pointValues = [200, 400, 600, 800, 1000];
 const categoryNames = ['The Central Valley Reckoning', 'Democratic Dream Team', 'Flip the Script', 'The Progressive Playbook', 'Wild Card', 'Who Is This?'];
-const teamColors = ['red', 'blue', 'green', 'gold'];
+let teamColors = ['red', 'blue', 'green', 'gold'];
 
 // Swap these with your own photos: paste an image URL or base64 data URI in each question's `image` field.
 const PHOTO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23DDDDDD'/%3E%3Ccircle cx='100' cy='78' r='38' fill='%23999'/%3E%3Cpath d='M38 190 Q38 122 100 122 Q162 122 162 190 Z' fill='%23999'/%3E%3Ctext x='100' y='185' font-family='sans-serif' font-size='13' fill='%23555' text-anchor='middle'%3EADD PHOTO%3C/text%3E%3C/svg%3E";
