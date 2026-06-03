@@ -781,8 +781,22 @@ function resetFinalJeopardy() {
 }
 
 function startGame() {
-  teams = [document.getElementById('team1').value || 'Team 1', document.getElementById('team2').value || 'Team 2', document.getElementById('team3').value || 'Team 3', document.getElementById('team4').value || 'Team 4'];
-  scores = [0, 0, 0, 0];
+  // Collect all entered team names and their original color indices
+  const allInputs = [
+    { name: document.getElementById('team1').value.trim(), colorIdx: 0 },
+    { name: document.getElementById('team2').value.trim(), colorIdx: 1 },
+    { name: document.getElementById('team3').value.trim(), colorIdx: 2 },
+    { name: document.getElementById('team4').value.trim(), colorIdx: 3 }
+  ];
+  
+  // Filter to only teams with entered names (non-empty)
+  const activeTeamData = allInputs.filter(t => t.name !== '');
+  
+  // Build arrays with only active teams
+  teams = activeTeamData.map(t => t.name);
+  scores = teams.map(() => 0);
+  const allColors = ['red', 'blue', 'green', 'gold'];
+  teamColors = activeTeamData.map(t => allColors[t.colorIdx]);
   
   const shuffledCats = shuffleArray([...categoryNames]);
   roundData = { 1: {}, 2: {} };
@@ -1157,10 +1171,10 @@ function renderFJChoices() {
   // Answer boxes (drop targets)
   html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; max-width: 1000px; margin-left: auto; margin-right: auto;">';
   finalJeopardy.choices.forEach((choice, idx) => {
-    html += '<div class="fj-drop-zone" id="drop-' + idx + '" style="border: 3px solid #FFFFFF; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 2rem; text-align: center; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center;">';
-    html += '<div style="font-size: 32px; font-weight: bold; color: #FFEE00; margin-bottom: 0.5rem;">' + choiceLetters[idx] + ')</div>';
-    html += '<div style="font-size: 18px; color: #FFFFFF; margin-bottom: 1rem;">' + choice + '</div>';
-    html += '<div id="team-at-' + idx + '" style="font-size: 14px; color: #8BAA5A; font-weight: bold; min-height: 20px;"></div>';
+    html += '<div class="fj-drop-zone" id="drop-' + idx + '" style="border: 3px solid #FFFFFF; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 2rem; text-align: center; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center;">';
+    html += '<div style="font-size: 40px; font-weight: bold; color: #FFEE00; margin-bottom: 1rem;">' + choiceLetters[idx] + ')</div>';
+    html += '<div style="font-size: 28px; color: #FFFFFF; margin-bottom: 1.5rem; font-weight: 700; line-height: 1.3;">' + choice + '</div>';
+    html += '<div id="team-at-' + idx + '" style="font-size: 16px; color: #8BAA5A; font-weight: bold; min-height: 20px;"></div>';
     html += '</div>';
   });
   html += '</div>';
@@ -1182,6 +1196,19 @@ function renderFJChoices() {
   html += '</div>';
   
   document.getElementById('fj-answers').innerHTML = html;
+  
+  // Update team displays at each answer zone
+  Object.keys(fjTeamAnswers).forEach(teamIdx => {
+    const answerIdx = fjTeamAnswers[teamIdx];
+    const teamDisplay = document.getElementById('team-at-' + answerIdx);
+    if (teamDisplay) {
+      const teamName = teams[teamIdx];
+      teamDisplay.textContent = teamName;
+      teamDisplay.style.color = teamColors[teamIdx] === 'red' ? '#E8443B' : 
+                                  teamColors[teamIdx] === 'blue' ? '#4A90D9' : 
+                                  teamColors[teamIdx] === 'green' ? '#8BAA5A' : '#D9B400';
+    }
+  });
   
   // Setup drag and drop
   setTimeout(() => {
@@ -1213,23 +1240,35 @@ function renderFJChoices() {
 }
 
 function lockFJAnswers() {
-  // Voice announce each answer
+  // Show visual lock indicators on all answer zones
+  document.querySelectorAll('.fj-drop-zone').forEach(zone => {
+    zone.style.opacity = '0.6';
+    zone.style.pointerEvents = 'none';
+  });
+  
+  // Disable drag on team pieces
+  document.querySelectorAll('.fj-team-piece').forEach(piece => {
+    piece.style.opacity = '0.5';
+    piece.draggable = false;
+  });
+  
+  // Add lock icon to zones that have teams
   const choiceLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
-  teams.forEach((t, i) => {
-    if (fjTeamAnswers[i] !== undefined) {
-      const choice = choiceLetters[fjTeamAnswers[i]];
-      const utterance = new SpeechSynthesisUtterance(t + ' picks ' + choice);
-      utterance.rate = 1;
-      speechSynthesis.speak(utterance);
+  Object.keys(fjTeamAnswers).forEach(teamIdx => {
+    const answerIdx = fjTeamAnswers[teamIdx];
+    const zoneEl = document.getElementById('drop-' + answerIdx);
+    if (zoneEl) {
+      const lockIcon = document.createElement('div');
+      lockIcon.style.cssText = 'font-size: 36px; margin-top: 0.5rem; color: #FFEE00;';
+      lockIcon.textContent = '🔒';
+      zoneEl.appendChild(lockIcon);
     }
   });
   
-  // After voice finishes, show REVEAL ANSWER button
-  setTimeout(() => {
-    document.querySelector('.fj-btn').style.display = 'none';
-    let html = '<button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;">REVEAL ANSWER</button>';
-    document.querySelector('[onclick="lockFJAnswers()"]').parentElement.innerHTML = html;
-  }, 3000);
+  // Immediately show REVEAL ANSWER button (no delay)
+  document.querySelector('.fj-btn').style.display = 'none';
+  let html = '<button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;">REVEAL ANSWER</button>';
+  document.querySelector('[onclick="lockFJAnswers()"]').parentElement.innerHTML = html;
 }
 
 function calculateFinalScores() {
@@ -1254,7 +1293,7 @@ function calculateFinalScores() {
     const winner = teams[winnerIdx];
     
     document.getElementById('final-scores').innerHTML = '';
-    document.getElementById('winner-text').innerHTML = '<div style="font-size: 72px; color: #FFEE00; margin-bottom: 1rem;">🏆</div><div style="font-size: 56px; margin-bottom: 1.5rem;">' + winner.toUpperCase() + '</div><div style="font-size: 48px; color: #FFEE00; margin-bottom: 1rem;">YOU WIN!</div><div style="font-size: 40px; color: #8BAA5A;">$' + scores[winnerIdx] + '</div>';
+    document.getElementById('winner-text').innerHTML = '<div style="font-size: 72px; color: #FFEE00; margin-bottom: 1rem;">🏆</div><div style="font-size: 96px; margin-bottom: 1.5rem; font-weight: 900; letter-spacing: 2px;">' + winner.toUpperCase() + '</div><div style="font-size: 48px; color: #FFEE00; margin-bottom: 1rem;">YOU WIN!</div><div style="font-size: 40px; color: #8BAA5A;">$' + scores[winnerIdx] + '</div>';
   }, 3000);
 }
 
