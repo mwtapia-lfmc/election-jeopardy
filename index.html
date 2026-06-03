@@ -8,6 +8,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&family=Permanent+Marker&family=Marck+Script&family=Covered+by+Your+Grace&family=Fuzzy+Bubbles&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Roboto', sans-serif; background-color: #000000; color: #FFFFFF; padding: 30px; padding-bottom: 120px; }
+.header-wrapper { position: relative; }
+.version-display { position: absolute; top: 15px; left: 15px; font-family: 'Roboto', sans-serif; font-size: 12px; color: #999999; letter-spacing: 1px; font-weight: 500; }
 .logo-header { cursor: pointer; text-align: center; margin-bottom: 2rem; }
 .logo-header img { height: 100px; width: auto; transition: transform 0.2s; }
 .logo-header img:hover { transform: scale(1.05); }
@@ -42,7 +44,7 @@ h1 { font-family: 'Bebas Neue', sans-serif; font-size: 60px; text-align: center;
 .start-button:hover { background: #FFF54D; }
 .reset-button { background: #E8443B; color: #FFFFFF; }
 .reset-button:hover { background: #C9332B; }
-.scoreboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.scoreboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; justify-items: center; width: fit-content; margin-left: auto; margin-right: auto; }
 .score-nametag { border: 4px solid #FFFFFF; border-radius: 12px; overflow: hidden; }
 .score-nametag.red .score-header { background: #E8443B; }
 .score-nametag.blue .score-header { background: #4A90D9; }
@@ -378,8 +380,8 @@ body.game-screen {
       <div class="nav-links">
         <span class="nav-link" onclick="event.stopPropagation(); openInfoModal('rules-modal')">RULES</span>
         <span class="nav-link" onclick="event.stopPropagation(); openInfoModal('about-modal')">ABOUT</span>
+        </div>
       </div>
-    </div>
 
 <div class="info-overlay" id="rules-modal">
   <div class="info-modal">
@@ -403,8 +405,8 @@ body.game-screen {
     </ul>
     
     <p>Highest score at the end wins.</p>
+    </div>
   </div>
-</div>
 
 <div class="info-overlay" id="about-modal">
   <div class="info-modal">
@@ -413,131 +415,137 @@ body.game-screen {
     <p>Election Jeopardy is a political trivia game built for Zoom calls and live events — a fast, friendly way to test what your group knows about candidates, districts, and the road to the next election.</p>
     
     <p style="margin-top: 2rem;">Made by Michael Tapia.</p>
+    </div>
   </div>
-</div>
 
 <div class="container">
+  <div class="header-wrapper">
+    <div class="version-display">v5.11</div>
+    <div class="logo-header" onclick="goHome()">
+      <h1>ELECTION JEOPARDY</h1>
+    </div>
+  </div>
+
   <div class="setup-screen screen active">
-    <h1>ELECTION JEOPARDY</h1>
     <div class="team-nametags">
       <div class="nametag red">
-        <div class="nametag-header"><div class="nametag-hello">HELLO</div><div class="nametag-subtext">my name is</div></div>
-        <div class="nametag-input-area"><input type="text" class="nametag-input" id="team1" placeholder="Team 1"></div>
-        <div class="nametag-bottom"></div>
-      </div>
+        <div class="nametag-header"><div class="nametag-hello">HELLO  </div><div class="nametag-subtext">my name is</div></div>
+        <div class="nametag-input-area"><input type="text" class="nametag-input" id="team1" placeholder="Team 1">  </div>
+        <div class="nametag-bottom">  </div>
+        </div>
       <div class="nametag blue">
-        <div class="nametag-header"><div class="nametag-hello">HELLO</div><div class="nametag-subtext">my name is</div></div>
-        <div class="nametag-input-area"><input type="text" class="nametag-input" id="team2" placeholder="Team 2"></div>
-        <div class="nametag-bottom"></div>
-      </div>
+        <div class="nametag-header"><div class="nametag-hello">HELLO  </div><div class="nametag-subtext">my name is</div></div>
+        <div class="nametag-input-area"><input type="text" class="nametag-input" id="team2" placeholder="Team 2">  </div>
+        <div class="nametag-bottom">  </div>
+        </div>
       <div class="nametag green">
-        <div class="nametag-header"><div class="nametag-hello">HELLO</div><div class="nametag-subtext">my name is</div></div>
-        <div class="nametag-input-area"><input type="text" class="nametag-input" id="team3" placeholder="Team 3"></div>
-        <div class="nametag-bottom"></div>
-      </div>
+        <div class="nametag-header"><div class="nametag-hello">HELLO  </div><div class="nametag-subtext">my name is</div></div>
+        <div class="nametag-input-area"><input type="text" class="nametag-input" id="team3" placeholder="Team 3">  </div>
+        <div class="nametag-bottom">  </div>
+        </div>
       <div class="nametag gold">
-        <div class="nametag-header"><div class="nametag-hello">HELLO</div><div class="nametag-subtext">my name is</div></div>
-        <div class="nametag-input-area"><input type="text" class="nametag-input" id="team4" placeholder="Team 4"></div>
-        <div class="nametag-bottom"></div>
+        <div class="nametag-header"><div class="nametag-hello">HELLO  </div><div class="nametag-subtext">my name is</div></div>
+        <div class="nametag-input-area"><input type="text" class="nametag-input" id="team4" placeholder="Team 4">  </div>
+        <div class="nametag-bottom">  </div>
+        </div>
       </div>
-    </div>
     <div class="button-group">
       <button class="start-button" onclick="startGame()">START GAME</button>
       <button class="reset-button" onclick="showResetConfirm()">RESET</button>
+      </div>
     </div>
-  </div>
 
   <div class="board-screen screen">
-    <div class="round-label">ROUND 1</div>
-    <div class="scoreboard" id="scoreboard"></div>
-    <div class="board"><div class="categories" id="categories"></div><div class="questions" id="questions"></div></div>
+    <div class="round-label">ROUND 1  </div>
+    <div class="scoreboard" id="scoreboard">  </div>
+    <div class="board"><div class="categories" id="categories">  </div><div class="questions" id="questions"></div></div>
     <div class="controls">
       <button class="control-btn prev-btn" onclick="previousRound()">← PREVIOUS</button>
       <button class="control-btn next-btn" onclick="nextRound()">NEXT →</button>
       <button class="control-btn reset-btn" onclick="showResetConfirm()">RESET</button>
+      </div>
     </div>
-  </div>
 
   <div class="transition-screen screen" id="transition">
-    <div class="transition-title" id="transition-title">END OF ROUND 1</div>
-    <div class="scoreboard" id="transition-scores"></div>
+    <div class="transition-title" id="transition-title">END OF ROUND 1  </div>
+    <div class="scoreboard" id="transition-scores">  </div>
     <div class="controls">
       <button class="control-btn prev-btn" onclick="previousRound()">← PREVIOUS</button>
       <button class="control-btn next-btn" onclick="advanceGame()">CONTINUE →</button>
       <button class="control-btn reset-btn" onclick="showResetConfirm()">RESET</button>
+      </div>
     </div>
-  </div>
 
   <div class="modal-overlay" id="modal">
     <div class="timer-display" id="timer-display">
-      <div class="timer-number"><span id="timer">30</span></div>
-      <div class="timer-label" id="timer-label">SECONDS</div>
-    </div>
+      <div class="timer-number"><span id="timer">30</span>  </div>
+      <div class="timer-label" id="timer-label">SECONDS  </div>
+      </div>
     <div class="question-modal">
-      <div class="category-label" id="q-category">Category</div>
+      <div class="category-label" id="q-category">Category  </div>
       <div class="question-display">
         <img class="question-image" id="question-image" style="display:none;" alt="Who is this?">
-        <div class="question-text" id="question-text">Question</div>
+        <div class="question-text" id="question-text">Question  </div>
+        </div>
+      <div class="buzzers" id="buzzers">  </div>
+      <div class="choice-buttons" id="choices" style="display:none;">  </div>
       </div>
-      <div class="buzzers" id="buzzers"></div>
-      <div class="choice-buttons" id="choices" style="display:none;"></div>
     </div>
-  </div>
 
   <div class="final-jeopardy-screen screen" id="fj-screen">
-    <div class="fj-title">FINAL JEOPARDY</div>
-    <div class="fj-wagers" id="fj-wagers"></div>
+    <div class="fj-title">FINAL JEOPARDY  </div>
+    <div class="fj-wagers" id="fj-wagers">  </div>
     <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items: center; margin-top: 2rem;">
       <button class="fj-btn" id="reveal-clue-btn" onclick="revealFJClue()" disabled>REVEAL CLUE</button>
-    </div>
+      </div>
     <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items: center; margin-top: 2rem;">
       <button class="control-btn reset-btn" onclick="showResetConfirm()">RESET</button>
+      </div>
     </div>
-  </div>
 
   <div class="screen" id="fj-clue-screen">
     <div style="position: fixed; top: 30px; right: 30px; background: rgba(0,0,0,0.9); border: 4px solid #FFEE00; border-radius: 12px; padding: 20px 30px; text-align: center; z-index: 999;">
-      <div id="fj-timer" style="font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: #FFEE00; line-height: 1; font-weight: bold;">30</div>
-      <div style="font-family: 'Roboto', sans-serif; font-size: 14px; color: #FFFFFF; letter-spacing: 2px; margin-top: 8px;">SECONDS</div>
-    </div>
+      <div id="fj-timer" style="font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: #FFEE00; line-height: 1; font-weight: bold;">30  </div>
+      <div style="font-family: 'Roboto', sans-serif; font-size: 14px; color: #FFFFFF; letter-spacing: 2px; margin-top: 8px;">SECONDS  </div>
+      </div>
     <div style="text-align: center; padding: 2rem;">
-      <div class="fj-title" id="fj-clue-text">Clue</div>
-      <div class="fj-wagers" id="fj-answers"></div>
+      <div class="fj-title" id="fj-clue-text">Clue  </div>
+      <div class="fj-wagers" id="fj-answers">  </div>
       <button class="fj-btn" onclick="calculateFinalScores()" style="margin-top: 3rem;">REVEAL ANSWER</button>
       <button class="control-btn reset-btn" onclick="showResetConfirm()" style="margin-top: 1rem;">RESET</button>
+      </div>
     </div>
-  </div>
 
   <div class="screen" id="game-over">
     <div style="text-align: center; padding: 3rem 0;">
       <h1 style="color: #FFEE00; font-size: 56px; margin-bottom: 2rem;">GAME OVER</h1>
-      <div class="scoreboard" id="final-scores"></div>
+      <div class="scoreboard" id="final-scores">  </div>
       <h1 id="winner-text" style="font-size: 48px; color: #FFEE00; margin-top: 3rem;"></h1>
       <button class="transition-btn" onclick="location.reload()" style="margin-top: 2rem;">PLAY AGAIN</button>
       <button class="control-btn reset-btn" onclick="showResetConfirm()" style="margin-top: 1rem; width: auto;">RESET</button>
+      </div>
     </div>
-  </div>
 
   <!-- Round Navigation Footer -->
   <div style="position: fixed; bottom: 0; left: 0; right: 0; background: #000000; border-top: 4px solid #FFEE00; padding: 1rem; display: flex; justify-content: center; gap: 1.5rem; z-index: 100;">
     <button onclick="resetRound1();" style="padding: 10px 24px; background: #FFFFFF; color: #111111; border: 3px solid #FFFFFF; border-radius: 8px; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; cursor: pointer; font-weight: bold;">ROUND 1</button>
     <button onclick="resetRound2();" style="padding: 10px 24px; background: #FFFFFF; color: #111111; border: 3px solid #FFFFFF; border-radius: 8px; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; cursor: pointer; font-weight: bold;">ROUND 2</button>
     <button onclick="resetFinalJeopardy();" style="padding: 10px 24px; background: #FFFFFF; color: #111111; border: 3px solid #FFFFFF; border-radius: 8px; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; cursor: pointer; font-weight: bold;">FINAL JEOPARDY</button>
+    </div>
+
   </div>
 
-</div>
-
-<div class="modal-backdrop" id="backdrop"></div>
+<div class="modal-backdrop" id="backdrop">  </div>
 <div class="modal-confirm" id="resetConfirm">
   <h2>ARE YOU SURE?</h2>
   <p>This will start a new game and reset all scores.</p>
   <div class="confirm-buttons">
     <button class="confirm-btn confirm-yes" onclick="resetGame()">YES</button>
     <button class="confirm-btn confirm-no" onclick="hideResetConfirm()">NO</button>
+    </div>
   </div>
-</div>
 
-<div class="version-counter">v3.0</div>
+<div class="version-counter">v3.0  </div>
 
 <script>
 const pointValues = [200, 400, 600, 800, 1000];
