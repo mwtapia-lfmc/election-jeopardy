@@ -792,11 +792,20 @@ function startGame() {
   // Filter to only teams with entered names (non-empty)
   const activeTeamData = allInputs.filter(t => t.name !== '');
   
+  // Require at least one team
+  if (activeTeamData.length === 0) {
+    alert('Please enter at least one team name!');
+    return;
+  }
+  
   // Build arrays with only active teams
   teams = activeTeamData.map(t => t.name);
   scores = teams.map(() => 0);
   const allColors = ['red', 'blue', 'green', 'gold'];
   teamColors = activeTeamData.map(t => allColors[t.colorIdx]);
+  
+  // Initialize roundScores for the filtered teams
+  roundScores = { 1: teams.map(() => 0), 2: teams.map(() => 0) };
   
   const shuffledCats = shuffleArray([...categoryNames]);
   roundData = { 1: {}, 2: {} };
