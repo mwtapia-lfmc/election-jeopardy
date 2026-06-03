@@ -556,7 +556,7 @@ const questionsData = {
     { text: "CA-22 has the highest rate of enrollment in which program?", choices: ['Medicare', 'Medicaid', 'ACA', 'Social Security'], correct: 1 }
   ],
   'Democratic Dream Team': [
-    { text: "Who is the current Vice President?", choices: ['Nancy Pelosi', 'Kamala Harris', 'Gretchen Whitmer', 'Josh Shapiro'], correct: 1 },
+    { text: "Who is the current Vice President?", choices: ['Nancy Pelosi', 'Kamala Harris', 'JD Vance', 'Josh Shapiro'], correct: 2 },
     { text: "What is Chuck Schumer's position?", choices: ['Speaker of House', 'Senate Majority Leader', 'DNC Chair', 'Minority Whip'], correct: 1 },
     { text: "Who was the first African American House Democratic leader?", choices: ['Al Green', 'Hakeem Jeffries', 'James Clyburn', 'Gregory Meeks'], correct: 1 },
     { text: "Until what year was Nancy Pelosi Speaker?", choices: ['2021', '2022', '2023', '2024'], correct: 2 },
@@ -1206,16 +1206,30 @@ function renderFJChoices() {
   
   document.getElementById('fj-answers').innerHTML = html;
   
-  // Update team displays at each answer zone
+  // Update team displays at each answer zone — show ALL teams for that answer
+  // First, clear all team displays
+  for (let i = 0; i < 6; i++) {
+    const teamDisplay = document.getElementById('team-at-' + i);
+    if (teamDisplay) {
+      teamDisplay.innerHTML = '';
+    }
+  }
+  
+  // Then populate with all teams that selected each answer
   Object.keys(fjTeamAnswers).forEach(teamIdx => {
     const answerIdx = fjTeamAnswers[teamIdx];
     const teamDisplay = document.getElementById('team-at-' + answerIdx);
     if (teamDisplay) {
       const teamName = teams[teamIdx];
-      teamDisplay.textContent = teamName;
-      teamDisplay.style.color = teamColors[teamIdx] === 'red' ? '#E8443B' : 
-                                  teamColors[teamIdx] === 'blue' ? '#4A90D9' : 
-                                  teamColors[teamIdx] === 'green' ? '#8BAA5A' : '#D9B400';
+      const teamColor = teamColors[teamIdx] === 'red' ? '#E8443B' : 
+                        teamColors[teamIdx] === 'blue' ? '#4A90D9' : 
+                        teamColors[teamIdx] === 'green' ? '#8BAA5A' : '#D9B400';
+      
+      // Append team name as a div (stacked vertically)
+      const teamDiv = document.createElement('div');
+      teamDiv.style.cssText = 'color: ' + teamColor + '; font-weight: bold; font-size: 14px; margin: 3px 0;';
+      teamDiv.textContent = teamName;
+      teamDisplay.appendChild(teamDiv);
     }
   });
   
